@@ -1,0 +1,166 @@
+<!--
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="/skin-xp/ui.fancytree.css" rel="stylesheet" type="text/css">
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+
+      
+        <title>Hydra Tutor</title>
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="Evan Spillane, AddThis">
+
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap.no-icons.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome.css" rel="stylesheet">
+
+        <style type="text/css">
+            body 
+            {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+        </style>
+        
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+        <link rel="shortcut icon" href="images/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="treetutor.css">
+
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/tree.html"><i class="icon-plus"></i> Hydra Tutor </a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li><a href="/filter.html">Filter</a></li>
+                            <li class="active"><a href="/tree.html">Tree</a></li>
+                            <li><a href="http://oss-docs.addthiscode.net/hydra/latest/user-reference/" target="_blank">Hydra User Reference</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row-fluid">
+                <div class="tutor-console-header span12">
+                    <h3 class="top-title">Enter Tree Input and Configuration</h3>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <h4>Input</h4>
+                    <div id="inputbox"></div>
+                </div>
+                <div id="querydiv" class="span5">
+                    <h4>Query</h4>
+                    <table id="table_query">
+                        <tr><th>path</th><td><input id="path" type="text"/></td></tr>
+                        <tr><th>ops</th><td><input id="ops" type="text"/></td></tr>
+                     </table>
+                    <div id="resultsTable"></div>
+                </div>
+                <div id="librarydiv" class="span5" style="display: none;">
+                    <h4>Library <small>(<a class='delete-lib-all' href="#">clear</a>)</small></h4>
+                    <ul id="librarybox"></ul>
+                </div>
+                <div class="span1">
+                    <button id="query-button" type="button" class="btn btn-large btn-info">Query</button>
+                    <br>
+                    <button id="stash-button" type="button" class="btn btn-large btn-success">Stash</button>
+                    <br>
+                    <button id="library-button" type="button" class="btn btn-large btn-default">Library</button>
+                    <br>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <h4>Configuration</h4>
+                    <div id="configbox"></div>
+                </div>
+                <div class="span5">
+                    <h4>Output</h4>
+                    <div id="tree" data-source="ajax"></div>
+                </div>
+                <div class="span1">
+                    <button id="build-button" type="button" class="btn btn-large btn-info">Build</button>
+                    <br>
+                    <button id="step-button" type="button" class="btn btn-large btn-success">Step</button>
+                    <br>
+                    <button id="back-button" type="button" class="btn btn-large btn-warning">Back</button>
+                    <br>
+                    <button id="reset-button" type="button" class="btn btn-large btn-danger">Reset</button>
+                    <br>
+                </div>
+            </div>
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#messages" data-toggle="tab">Messages</a></li>
+                    <li><a href="#data" data-toggle="tab">Data Attachments</a></li>
+                    <li><a href="#links" data-toggle="tab">Helpful Links</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="messages" class="tab-pane active">
+                        <textarea class="tree-textarea" id="messagebox" rows="7" readonly></textarea>
+                    </div>
+                    <div id="data" class="tab-pane">
+                        <textarea class="tree-textarea" id="databox" rows="7" readonly></textarea>
+                    </div>
+                    <div id="links" class="tab-pane"></div>
+                </div>
+            </div>
+
+            <footer>
+                <p>© AddThis 2013</p>
+            </footer>
+        </div>
+
+        <script id="library-template" type="text/x-handlebars-template">
+            {{#each items}}
+            <li data-id={{this.id}}><a class='library-link' href={{this.href}}>{{this.date}}</a>&nbsp;
+            <a class='delete-lib-item' href="#">X</a></li>
+            {{/each}}
+        </script>
+
+        <!-- javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0-rc.3/handlebars.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+        <script src="js/jquery.md5.js"></script>
+        <script src="js/jquery.hotkeys.js"></script>
+        <script src="js/jquery.fancytree.js"></script>
+        <script src="js/treetutor.js"></script>
+    </body>
+</html>

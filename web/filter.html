@@ -1,0 +1,351 @@
+<!--
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!DOCTYPE html>
+<!-- saved from url=(0054)http://twitter.github.com/bootstrap/examples/hero.html -->
+<html lang="en">
+<head>
+  
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+
+  
+    <title>Hydra Tutor</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Michael Spiegel, Greg Jennings, Mo Patel, Andres Navarro, Evan Spillane, AddThis">
+
+  <!-- Le styles -->
+  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.6/select2.css" rel="stylesheet">
+
+  <style type="text/css">
+    body {
+      padding-top: 60px;
+      padding-bottom: 40px;
+    }
+  </style>
+  <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="images/favicon.ico">
+
+  <style>
+
+  a.brand > i {
+    color: orange;
+    margin-right: 10px;
+  }
+
+  a.brand:hover > i{
+    color: white;
+  }
+
+  .item-label{
+    font-weight: bold;
+  }
+
+  .comment-line{
+    border: 1px solid lightgray;
+    padding: 5px;
+    background-color: #FFF8DC;
+  }
+
+  .centered-subtitle{
+    text-align: center;
+  }
+
+  .underlined-subtitle{
+    border-bottom: 1px solid lightgray;
+  }
+
+  .daily-request-number{
+    margin-left: 10px;
+  }
+
+  .campaign-list-row{
+    border-bottom: 1px solid lightgray;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+  }
+
+  .campaign-list-row:hover{
+    background-color: #e0eeed;
+  }
+
+  .approval-span{
+    background-color: yellow;
+    padding: 4px;
+  }
+
+/* REMOVE TODO
+  .live-model-span{
+    background-color: green;
+    color:white;
+  }
+  */
+
+  .error-model-span{
+    background-color: #A9A9A9;
+    color: #525252;
+  }
+
+  .pending-model-span{
+    background-color: yellow;
+  }
+
+  .active-model-span{
+    background-color: #00FF00;
+  }
+
+  .previous-model-span{
+    background-color: #006633;
+    color: white;
+  }  
+
+  .first-request{
+  }
+
+  #comment{
+    width: 300px;
+  }
+
+  .status-val1, .status-val2, .status-val3, .status-val4, .status-val5{
+    border-radius: 3px;
+    padding: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .status-val1{
+    background-color: yellow;
+  }
+
+  .status-val2{
+    background-color: orange;
+  }
+
+  .status-val3{
+    background-color: #00FF00;
+  }
+
+  .status-val4{
+    background-color: #006633;
+    color: white;
+  }
+
+  .status-val5{
+    background-color: #CC0000;
+    color: white;
+  }
+
+  #filterform{
+    display: inline;
+    margin-left: 4px;
+  }
+
+  .small-bottom-margin{
+    margin-bottom: 0;
+  }
+
+  .hero-unit{
+    text-align: center;
+  } 
+
+  .hero-unit > img{
+    border-radius: 10px;
+  } 
+
+  .hydra-console-header{
+    text-align: center;
+  }
+
+  #store-button,
+  #share-button,
+  #stash-button,
+  #reset-button{
+    margin-top: 5px;
+  }
+
+  #examples-button{
+    margin-top: 5px;
+    padding: 11px 8px;
+    text-align: left;
+  }
+
+
+  #run-button{
+    margin-top: 60px;
+  }
+
+  .hydra-textarea{
+    width: 100%;
+    resize: vertical;
+    opacity: 0.8;
+    color: black;
+  }
+
+  .btn-large{
+    width: 95px;
+  }
+
+  div.span5 {
+     overflow:auto;
+     height:300px;
+  }
+
+  textarea[readonly]{
+    background-color: white;
+    cursor: default;
+  }
+
+  .top-title {
+    font-weight: bolder;
+    color: white;
+    background-color: black;
+    border: 2px green solid;
+    border-radius: 4px;
+  }
+
+  </style>
+  
+  </head>
+
+  <body>
+
+  
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/filter.html"><i class="icon-plus"></i> Hydra Tutor </a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="/filter.html">Filter</a></li>
+              <li><a href="/tree.html">Tree</a></li>
+              <li><a href="http://oss-docs.addthiscode.net/hydra/latest/user-reference/" target="_blank">Hydra User Reference</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+
+  <div class="container">
+    <div class="row-fluid">
+      <div class="hydra-console-header span12">
+        <h3 class="top-title">Enter Hydra Input and Filter</h3>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span6">
+        <h4>Input</h4>
+        <textarea class="hydra-textarea" id="inputbox" rows="14" tabindex=1></textarea>
+      </div>
+      <div class="span5">
+        <h4 id="libraryheader">Library <small>(<a class='delete-lib-all' href="#">clear</a>)</small></h4>
+        <ul id="librarybox">
+        </ul>
+      </div>
+
+      <div class="span1">
+        <button id="run-button" type="button" class="btn btn-large btn-success">Run</button>
+        <br>
+        <button id="reset-button" type="button" class="btn btn-large btn-warning">Reset</button>
+        <br>
+        <button id="examples-button" type="button" class="btn btn-large btn-info">Examples</button>
+        <br>
+        <button id="stash-button" type="button" class="btn btn-large btn-primary">Stash</button>
+        <br>
+<!--
+        <button id="store-button" type="button" class="btn btn-large btn-primary">Store</button>
+        <br>
+-->
+        <br>
+    </div>
+    </div> <!-- end first row -->
+    <div class="row-fluid">
+      <div class="span6">
+        <h4>Filter&nbsp;&nbsp;<small>(type:
+            <input type="radio" style="vertical-align: middle; margin: 0px;" name="filtertype" value="auto" checked> autodetect</input>
+            <input type="radio" style="vertical-align: middle; margin: 0px;" name="filtertype" value="bundle"> bundle</input>
+            <input type="radio" style="vertical-align: middle; margin: 0px;" name="filtertype" value="value"> value</input>)</small></h4>
+        <textarea class="hydra-textarea" id="filterbox" rows="14" tabindex=2></textarea>
+      </div>
+      <div class="span6">
+        <h4>Output</h4>
+        <textarea class="hydra-textarea" id="outputbox" rows="14" readonly></textarea>
+      </div>
+    </div> <!-- end second row -->
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Messages</h4>
+            <textarea class="hydra-textarea" id="messagebox" rows="7" readonly></textarea>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Example row of columns -->
+
+
+    <footer>
+      <p>© AddThis 2013</p>
+    </footer>
+
+  </div> <!-- /container -->
+
+
+  <script id="library-template" type="text/x-handlebars-template">
+    {{#each items}}
+    <li data-id={{this.id}}><a class='library-link' href={{this.href}}>{{this.filterbox}}</a>&nbsp;
+    <a class='delete-lib-item' href="#">X</a></li>
+    {{/each}}
+  </script>
+
+
+    <!-- javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0-rc.3/handlebars.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.js"></script>
+    <script src="js/jquery.md5.js"></script>
+    <script src="js/filtertutor.js"></script>
+
+  </body>
+</html>

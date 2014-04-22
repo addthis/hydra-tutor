@@ -1,0 +1,16 @@
+/*Custom Stylesheet*/
+.fancytree-has-children span.fancytree-icon
+{
+	background-position: 0 0;
+	background-image: url("leaf");
+}
+span.custom1 a
+{
+	background-color: #ffffbb;
+	color: blue;
+}
+span.custom1 span.fancytree-icon
+{
+	background-position: 0 0;
+	background-image: url("tree");
+}
