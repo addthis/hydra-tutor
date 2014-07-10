@@ -15,6 +15,10 @@ package com.addthis.hydratutor.dropwizard;
 
 import com.addthis.bundle.table.DataTable;
 import com.addthis.codec.Codec;
+import com.addthis.codec.annotations.Pluggable;
+import com.addthis.codec.config.CodecConfig;
+import com.addthis.codec.plugins.PluginMap;
+import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.tree.TreeNodeData;
 import com.addthis.maljson.JSONException;
 import com.addthis.maljson.JSONObject;
@@ -327,17 +331,16 @@ public class TreeTutorResource {
         try {
             TreeTutorState state = userState.getIfPresent(uid);
             if (path.endsWith("*")) {
-
                 JSONObject data = state.getData(path.substring(0, path.length() - 1));
                 Iterator keys = data.keys();
-                Codec.ClassMap classMap = new TreeNodeData.CMAP().getClassMap();
-                int linkNum = 1;
+                Pluggable pluggable = TreeNodeData.class.getAnnotation(Pluggable.class);
+                PluginRegistry pluginRegistry = CodecConfig.getDefault().pluginRegistry();
+                PluginMap pluginMap = pluginRegistry.asMap().get(pluggable.value());
                 while (keys.hasNext()) {
                     JSONObject dataJSON = data.getJSONObject(keys.next().toString());
                     String dataString = dataJSON.getString("t");
-                    String dataType = classMap.getClass(dataString).getSimpleName();
+                    String dataType = pluginMap.getClass(dataString).getSimpleName();
                     links.put(dataType, "http://oss-docs.addthiscode.net/hydra/latest/user-reference/com/addthis/hydra/data/tree/prop/" + dataType + ".Config.html");
-                    linkNum++;
                 }
 
                 attachments.put("data", "[" + data.toString() + "]");

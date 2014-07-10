@@ -18,17 +18,18 @@ import java.util.List;
 
 import com.addthis.basis.util.Strings;
 
-import com.addthis.codec.Codec;
+import com.addthis.codec.annotations.FieldConfig;
+import com.addthis.codec.codables.Codable;
 
-public class LosslessTokenizer implements Codec.Codable {
+public class LosslessTokenizer implements Codable {
 
-    @Codec.Set(codable = true)
+    @FieldConfig(codable = true)
     private String separator = ",";
-    @Codec.Set(codable = true)
+    @FieldConfig(codable = true)
     private String group[];
-    @Codec.Set(codable = true)
+    @FieldConfig(codable = true)
     private boolean pack;
-    @Codec.Set(codable = true)
+    @FieldConfig(codable = true)
     private String escape = "\\";
 
     private int maxColCount;

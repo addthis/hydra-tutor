@@ -18,12 +18,17 @@ import com.addthis.bundle.value.ValueFactory;
 import com.addthis.bundle.value.ValueObject;
 import com.addthis.bundle.value.ValueString;
 import com.addthis.codec.Codec;
-import com.addthis.codec.CodecExceptionLineNumber;
-import com.addthis.codec.CodecJSON;
+import com.addthis.codec.annotations.Pluggable;
+import com.addthis.codec.config.CodecConfig;
+import com.addthis.codec.json.CodecExceptionLineNumber;
+import com.addthis.codec.json.CodecJSON;
+import com.addthis.codec.plugins.PluginMap;
+import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
 import com.addthis.hydra.data.filter.value.ValueFilter;
 import com.addthis.hydra.data.filter.value.ValueFilterEvalJava;
+import com.addthis.hydra.data.tree.TreeNodeData;
 import com.addthis.hydratutor.bundle.JSONBundle;
 import com.addthis.hydratutor.bundle.JSONBundleFormat;
 import com.addthis.hydratutor.bundle.JSONBundleMap;
@@ -46,8 +51,17 @@ public class HydraTutorState {
     FilterCache filterCache;
     volatile Future<JSONObject> future;
 
-    static Codec.ClassMap vClassMap = new ValueFilter.CMAP().getClassMap();
-    static Codec.ClassMap bClassMap = new BundleFilter.CMAP().getClassMap();
+    static final PluginMap vClassMap;
+    static final PluginMap bClassMap;
+
+    static {
+        Pluggable valueFilterPluggable = ValueFilter.class.getAnnotation(Pluggable.class);
+        Pluggable bundleFilterPluggable = BundleFilter.class.getAnnotation(Pluggable.class);
+
+        PluginRegistry pluginRegistry = CodecConfig.getDefault().pluginRegistry();
+        vClassMap = pluginRegistry.asMap().get(valueFilterPluggable.value());
+        bClassMap = pluginRegistry.asMap().get(bundleFilterPluggable.value());
+    }
 
     private static final String errorMsg = "Cannot parse the input %s. " +
                                            "You should place quotes around your input " +
@@ -195,26 +209,26 @@ public class HydraTutorState {
                 List<CodecExceptionLineNumber> codecErrors = new ArrayList<CodecExceptionLineNumber>();
 
                 if (filtertype.equals("auto")) {
-                    if (vClassMap.contains(stype) && bClassMap.contains(stype)) {
+                    if (vClassMap.getClass(stype) != null && bClassMap.getClass(stype) != null) {
                         throw new IllegalStateException(
                                 "The 'op : \"" + stype + "\"' can be interpreted as either" +
                                 " a bundle filter or a value filter. Please select 'bundle'" +
                                 " or 'value' and retry.");
                     }
-                    if (vClassMap.contains(stype)) {
+                    if (vClassMap.getClass(stype) != null) {
                         vFilter = CodecJSON.decodeObject(ValueFilter.class, filterJSONObject, codecErrors);
                         vFilter.setup();
-                    } else if (bClassMap.contains(stype)) {
+                    } else if (bClassMap.getClass(stype) != null) {
                         bFilter = CodecJSON.decodeObject(BundleFilter.class, filterJSONObject, codecErrors);
                         bFilter.initialize();
                     } else {
                         throw new IllegalStateException("Cannot recognize the 'op : \"" + stype + "\"'");
                     }
                 } else if (filtertype.equals("bundle")) {
-                    if (bClassMap.contains(stype)) {
+                    if (bClassMap.getClass(stype) != null) {
                         bFilter = CodecJSON.decodeObject(BundleFilter.class, filterJSONObject, codecErrors);
                         bFilter.initialize();
-                    } else if (vClassMap.contains(stype)) {
+                    } else if (vClassMap.getClass(stype) != null) {
                         throw new IllegalStateException("It looks like you have specified a value filter " +
                                                         "and selected the radio box for bundle filters. " +
                                                         "Please select 'auto' or change the filter 'op : \"" + stype + "\"'");
@@ -222,10 +236,10 @@ public class HydraTutorState {
                         throw new IllegalStateException("Cannot recognize the bundle filter 'op : \"" + stype + "\"'");
                     }
                 } else {
-                    if (vClassMap.contains(stype)) {
+                    if (vClassMap.getClass(stype) != null) {
                         vFilter = CodecJSON.decodeObject(ValueFilter.class, filterJSONObject, codecErrors);
                         vFilter.setup();
-                    } else if (bClassMap.contains(stype)) {
+                    } else if (bClassMap.getClass(stype) != null) {
                         throw new IllegalStateException("It looks like you have specified a bundle filter " +
                                                         "and selected the radio box for value filters. " +
                                                         "Please select 'auto' or change the filter 'op : \"" + stype + "\"'");
