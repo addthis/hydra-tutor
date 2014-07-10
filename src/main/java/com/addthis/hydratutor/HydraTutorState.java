@@ -22,9 +22,7 @@ import com.addthis.bundle.value.ValueArray;
 import com.addthis.bundle.value.ValueFactory;
 import com.addthis.bundle.value.ValueObject;
 import com.addthis.bundle.value.ValueString;
-import com.addthis.codec.annotations.Pluggable;
 import com.addthis.codec.config.CodecConfig;
-import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
 import com.addthis.hydra.data.filter.value.ValueFilter;
@@ -34,8 +32,6 @@ import com.addthis.hydratutor.bundle.JSONBundleFormat;
 import com.addthis.hydratutor.bundle.JSONBundleMap;
 import com.addthis.maljson.JSONException;
 import com.addthis.maljson.JSONObject;
-
-import com.google.common.collect.BiMap;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -48,18 +44,6 @@ public class HydraTutorState {
     BundleFilter bFilter;
     FilterCache filterCache;
     volatile Future<JSONObject> future;
-
-    static final BiMap<String, Class<?>> vClassMap;
-    static final BiMap<String, Class<?>> bClassMap;
-
-    static {
-        Pluggable valueFilterPluggable = ValueFilter.class.getAnnotation(Pluggable.class);
-        Pluggable bundleFilterPluggable = BundleFilter.class.getAnnotation(Pluggable.class);
-
-        PluginRegistry pluginRegistry = CodecConfig.getDefault().pluginRegistry();
-        vClassMap = pluginRegistry.asMap().get(valueFilterPluggable.value()).asBiMap();
-        bClassMap = pluginRegistry.asMap().get(bundleFilterPluggable.value()).asBiMap();
-    }
 
     private static final String errorMsg = "Cannot parse the input %s. " +
                                            "You should place quotes around your input " +
@@ -188,7 +172,6 @@ public class HydraTutorState {
                 throw new IllegalStateException("Internal error: the filter type " +
                                                 "is not one of \"auto\", \"bundle\", or \"value\".");
             }
-
 
             filter = filter.trim();
             input = input.trim();
