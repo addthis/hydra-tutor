@@ -13,6 +13,8 @@
  */
 package com.addthis.hydratutor.bundle;
 
+import java.util.Iterator;
+
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.core.BundleException;
 import com.addthis.bundle.core.BundleField;
@@ -22,9 +24,6 @@ import com.addthis.bundle.value.ValueFactory;
 import com.addthis.bundle.value.ValueMap;
 import com.addthis.bundle.value.ValueMapEntry;
 import com.addthis.bundle.value.ValueObject;
-
-import java.util.Iterator;
-
 import com.addthis.maljson.JSONArray;
 import com.addthis.maljson.JSONObject;
 
@@ -55,6 +54,10 @@ public class JSONBundle implements Bundle {
             map.put(key, createPrimitiveBundle(clazz, raw));
         }
         return map;
+    }
+
+    public ValueMap asMap() {
+        return convertJSONObject(json);
     }
 
     @Override
@@ -110,7 +113,8 @@ public class JSONBundle implements Bundle {
                 value = value.asCustom().asMap();
             case MAP:
                 JSONObject map = new JSONObject();
-                for (ValueMapEntry entry : value.asMap()) {
+                ValueMap<?> asMap = value.asMap();
+                for (ValueMapEntry<?> entry : asMap) {
                     map.put(entry.getKey(), valueToNative(entry.getValue()));
                 }
                 return map;

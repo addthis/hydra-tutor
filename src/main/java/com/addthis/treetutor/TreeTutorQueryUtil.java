@@ -43,7 +43,8 @@ public class TreeTutorQueryUtil {
      * @param ops  - query ops
      */
     public DataTable runQuery(String path, String ops, File directory) throws Exception {
-        Query query = new Query(null, path, null);
+        String[] paths = {path};
+        Query query = new Query(null, paths, null);
 
         final File dir = new File(directory, "data");
         QuerySource client = new QueryEngineSource() {

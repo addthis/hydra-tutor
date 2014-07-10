@@ -34,7 +34,7 @@ import com.addthis.bundle.value.ValueObject;
 import com.addthis.bundle.value.ValueString;
 import com.addthis.bundle.value.ValueTranslationException;
 
-public class JSONBundleMap implements ValueMap {
+public class JSONBundleMap<V> implements ValueMap<V> {
 
     private final JSONBundle json;
 
@@ -53,8 +53,8 @@ public class JSONBundleMap implements ValueMap {
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends ValueObject> map) {
-        for (Entry<? extends String, ? extends ValueObject> entry : map.entrySet()) {
+    public void putAll(Map<? extends String, ? extends ValueObject<V>> map) {
+        for (Entry<? extends String, ? extends ValueObject<V>> entry : map.entrySet()) {
             BundleField field = new JSONBundleField(entry.getKey());
             json.setValue(field, entry.getValue());
         }
@@ -62,7 +62,7 @@ public class JSONBundleMap implements ValueMap {
 
     @Override
     public void clear() {
-        Iterator<ValueMapEntry> iterator = iterator();
+        Iterator<ValueMapEntry<V>> iterator = iterator();
         while (iterator.hasNext()) {
             iterator.next();
             iterator.remove();
@@ -75,18 +75,18 @@ public class JSONBundleMap implements ValueMap {
     }
 
     @Override
-    public Collection<ValueObject> values() {
-        List<ValueObject> list = new ArrayList<>();
-        Iterator<ValueMapEntry> iterator = iterator();
+    public Collection<ValueObject<V>> values() {
+        List<ValueObject<V>> list = new ArrayList<>();
+        Iterator<ValueMapEntry<V>> iterator = iterator();
         while (iterator.hasNext()) {
-            ValueMapEntry entry = iterator.next();
+            ValueMapEntry<V> entry = iterator.next();
             list.add(entry.getValue());
         }
         return list;
     }
 
     @Override
-    public ValueObject put(String key, ValueObject val) {
+    public ValueObject<V> put(String key, ValueObject val) {
         BundleField field = new JSONBundleField(key);
         ValueObject ret = json.getValue(field);
         json.setValue(field, val);
@@ -112,7 +112,7 @@ public class JSONBundleMap implements ValueMap {
 
     @Override
     public boolean containsValue(Object value) {
-        Iterator<ValueMapEntry> iterator = iterator();
+        Iterator<ValueMapEntry<V>> iterator = iterator();
         while (iterator.hasNext()) {
             ValueMapEntry entry = iterator.next();
             if (entry.getValue().equals(value)) {
@@ -123,13 +123,17 @@ public class JSONBundleMap implements ValueMap {
     }
 
     @Override
-    public Set<Map.Entry<String, ValueObject>> entrySet() {
+    public Set<Map.Entry<String, ValueObject<V>>> entrySet() {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public TYPE getObjectType() {
         return TYPE.MAP;
+    }
+
+    @Override public Map<String, V> asNative() {
+        return (Map<String, V>) json.asMap().asNative();
     }
 
     @Override
@@ -173,8 +177,8 @@ public class JSONBundleMap implements ValueMap {
     }
 
     @Override
-    public Iterator<ValueMapEntry> iterator() {
-        return new Iterator<ValueMapEntry>() {
+    public Iterator<ValueMapEntry<V>> iterator() {
+        return new Iterator<ValueMapEntry<V>>() {
             final Iterator<BundleField> iter = json.iterator();
             String lastKey;
 
@@ -184,9 +188,9 @@ public class JSONBundleMap implements ValueMap {
             }
 
             @Override
-            public ValueMapEntry next() {
+            public ValueMapEntry<V> next() {
                 final String key;
-                final ValueObject value;
+                final ValueObject<V> value;
 
                 {
                     BundleField next = iter.next();
@@ -195,19 +199,19 @@ public class JSONBundleMap implements ValueMap {
                     lastKey = key;
                 }
 
-                return new ValueMapEntry() {
+                return new ValueMapEntry<V>() {
                     @Override
                     public String getKey() {
                         return key;
                     }
 
                     @Override
-                    public ValueObject getValue() {
+                    public ValueObject<V> getValue() {
                         return value;
                     }
 
                     @Override
-                    public ValueObject setValue(ValueObject val) {
+                    public ValueObject<V> setValue(ValueObject<V> val) {
                         return put(key, value);
                     }
                 };
