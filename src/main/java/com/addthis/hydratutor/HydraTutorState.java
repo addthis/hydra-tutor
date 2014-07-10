@@ -186,15 +186,25 @@ public class HydraTutorState {
                 Config filterConfig = ConfigFactory.parseString(filterCache.filter);
 
                 if (filtertype.equals("auto")) {
+                    RuntimeException filterException = null;
                     try {
                         vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
                         vFilter.setup();
-                    } catch (Exception ignored) {
+                    } catch (RuntimeException stored) {
+                        filterException = stored;
                     }
                     try {
                         bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
                         bFilter.initialize();
-                    } catch (Exception ignored) {
+                    } catch (RuntimeException stored) {
+                        if (filterException != null) {
+                            throw new RuntimeException("\n" +
+                                                       "as value filter:\n" + filterException.getMessage() +
+                                                       "\n\n" +
+                                                       "as bundle filter:\n" + stored.getMessage());
+                        } else {
+                            filterException = stored;
+                        }
                     }
                     if ((vFilter != null) && (bFilter != null)) {
                         throw new IllegalStateException(
@@ -203,8 +213,7 @@ public class HydraTutorState {
                                 " or 'value' and retry.");
                     }
                     if ((vFilter == null) && (bFilter == null)) {
-                        throw new IllegalStateException("Cannot recognize the op or other ambiguous error. " +
-                                                        "Specify 'bundle' or 'value' for more information");
+                        throw filterException;
                     }
                 } else if (filtertype.equals("bundle")) {
                     bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
