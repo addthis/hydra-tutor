@@ -13,14 +13,17 @@
  */
 package com.addthis.hydratutor;
 
+import java.util.List;
+import java.util.concurrent.Future;
+
+import com.addthis.basis.util.Parameter;
+
 import com.addthis.bundle.value.ValueArray;
 import com.addthis.bundle.value.ValueFactory;
 import com.addthis.bundle.value.ValueObject;
 import com.addthis.bundle.value.ValueString;
 import com.addthis.codec.annotations.Pluggable;
 import com.addthis.codec.config.CodecConfig;
-import com.addthis.codec.json.CodecExceptionLineNumber;
-import com.addthis.codec.json.CodecJSON;
 import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
@@ -32,14 +35,10 @@ import com.addthis.hydratutor.bundle.JSONBundleMap;
 import com.addthis.maljson.JSONException;
 import com.addthis.maljson.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import com.addthis.basis.util.Parameter;
-
 import com.google.common.collect.BiMap;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 public class HydraTutorState {
 
@@ -201,65 +200,36 @@ public class HydraTutorState {
                 vFilter = null;
                 bFilter = null;
 
-                JSONObject filterJSONObject = new JSONObject(filterCache.filter);
-
-                String stype = (filterJSONObject).optString("op", null);
-
-                List<CodecExceptionLineNumber> codecErrors = new ArrayList<CodecExceptionLineNumber>();
+                Config filterConfig = ConfigFactory.parseString(filterCache.filter);
 
                 if (filtertype.equals("auto")) {
-                    if (vClassMap.get(stype) != null && bClassMap.get(stype) != null) {
+                    try {
+                        vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
+                        vFilter.setup();
+                    } catch (Exception ignored) {
+                    }
+                    try {
+                        bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
+                        bFilter.initialize();
+                    } catch (Exception ignored) {
+                    }
+                    if ((vFilter != null) && (bFilter != null)) {
                         throw new IllegalStateException(
-                                "The 'op : \"" + stype + "\"' can be interpreted as either" +
+                                "The op can be interpreted as either" +
                                 " a bundle filter or a value filter. Please select 'bundle'" +
                                 " or 'value' and retry.");
                     }
-                    if (vClassMap.get(stype) != null) {
-                        vFilter = CodecJSON.decodeObject(ValueFilter.class, filterJSONObject, codecErrors);
-                        vFilter.setup();
-                    } else if (bClassMap.get(stype) != null) {
-                        bFilter = CodecJSON.decodeObject(BundleFilter.class, filterJSONObject, codecErrors);
-                        bFilter.initialize();
-                    } else {
-                        throw new IllegalStateException("Cannot recognize the 'op : \"" + stype + "\"'");
+                    if ((vFilter == null) && (bFilter == null)) {
+                        throw new IllegalStateException("Cannot recognize the op or other ambiguous error. " +
+                                                        "Specify 'bundle' or 'value' for more information");
                     }
                 } else if (filtertype.equals("bundle")) {
-                    if (bClassMap.get(stype) != null) {
-                        bFilter = CodecJSON.decodeObject(BundleFilter.class, filterJSONObject, codecErrors);
-                        bFilter.initialize();
-                    } else if (vClassMap.get(stype) != null) {
-                        throw new IllegalStateException("It looks like you have specified a value filter " +
-                                                        "and selected the radio box for bundle filters. " +
-                                                        "Please select 'auto' or change the filter 'op : \"" + stype + "\"'");
-                    } else {
-                        throw new IllegalStateException("Cannot recognize the bundle filter 'op : \"" + stype + "\"'");
-                    }
+                    bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
+                    bFilter.initialize();
                 } else {
-                    if (vClassMap.get(stype) != null) {
-                        vFilter = CodecJSON.decodeObject(ValueFilter.class, filterJSONObject, codecErrors);
-                        vFilter.setup();
-                    } else if (bClassMap.get(stype) != null) {
-                        throw new IllegalStateException("It looks like you have specified a bundle filter " +
-                                                        "and selected the radio box for value filters. " +
-                                                        "Please select 'auto' or change the filter 'op : \"" + stype + "\"'");
-                    } else {
-                        throw new IllegalStateException("Cannot recognize the value filter 'op : \"" + stype + "\"'");
-                    }
+                    vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
+                    vFilter.setup();
                 }
-
-                if (codecErrors.size() > 0) {
-                    StringBuilder message = new StringBuilder();
-                    Iterator<CodecExceptionLineNumber> iter = codecErrors.iterator();
-                    while (iter.hasNext()) {
-                        CodecExceptionLineNumber ex = iter.next();
-                        message.append(ex.getMessage());
-                        if (iter.hasNext()) {
-                            message.append("\n");
-                        }
-                    }
-                    throw new IllegalStateException(message.toString());
-                }
-
             }
 
             String[] inputs = input.split("[\\r\\n]+");
