@@ -13,15 +13,6 @@
  */
 package com.addthis.treetutor;
 
-import com.addthis.bundle.core.Bundle;
-import com.addthis.bundle.table.DataTable;
-import com.addthis.codec.CodecJSON;
-import com.addthis.hydra.data.tree.DataTreeNode;
-import com.addthis.hydra.data.tree.ReadTree;
-import com.addthis.hydra.data.tree.ReadTreeNode;
-import com.addthis.hydra.task.output.tree.TreeMapper;
-import com.addthis.hydra.task.run.TaskRunConfig;
-
 import java.io.File;
 
 import java.util.Iterator;
@@ -29,6 +20,14 @@ import java.util.NoSuchElementException;
 
 import com.addthis.basis.util.Files;
 
+import com.addthis.bundle.core.Bundle;
+import com.addthis.bundle.table.DataTable;
+import com.addthis.codec.json.CodecJSON;
+import com.addthis.hydra.data.tree.DataTreeNode;
+import com.addthis.hydra.data.tree.ReadTree;
+import com.addthis.hydra.data.tree.ReadTreeNode;
+import com.addthis.hydra.task.output.tree.TreeMapper;
+import com.addthis.hydra.task.run.TaskRunConfig;
 import com.addthis.maljson.JSONArray;
 import com.addthis.maljson.JSONException;
 import com.addthis.maljson.JSONObject;

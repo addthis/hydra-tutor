@@ -14,7 +14,7 @@
 package com.addthis.treetutor.examples;
 
 import com.addthis.bundle.core.Bundle;
-import com.addthis.codec.CodecJSON;
+import com.addthis.codec.json.CodecJSON;
 import com.addthis.hydra.task.run.TaskRunConfig;
 import com.addthis.hydra.task.source.TaskDataSource;
 import com.addthis.maljson.JSONObject;

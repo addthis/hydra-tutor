@@ -13,19 +13,18 @@
  */
 package com.addthis.treetutor;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Semaphore;
+
 import com.addthis.bundle.channel.DataChannelError;
 import com.addthis.bundle.channel.DataChannelOutput;
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.core.list.ListBundle;
 import com.addthis.bundle.core.list.ListBundleFormat;
 import com.addthis.bundle.table.DataTable;
-import com.addthis.hydra.data.query.Query;
 import com.addthis.hydra.data.query.QueryException;
 import com.addthis.hydra.data.query.QueryOpProcessor;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Semaphore;
 
 /**
  * Query Consumer for TreeTutor. Puts the bundles that match query and adds them to a Data Table.
@@ -41,7 +40,7 @@ public class TreeTutorQueryConsumer implements DataChannelOutput {
      * Default constructor for TreeTutorQueryConsumer.
      */
     public TreeTutorQueryConsumer() {
-        table = new QueryOpProcessor.Builder(this).build().createTable(0);
+        table = new QueryOpProcessor.Builder(this).build().tableFactory().createTable(0);
         try {
             gate.acquire();
         } catch (InterruptedException e) {

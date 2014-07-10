@@ -148,7 +148,7 @@ public class JSONBundleMap implements ValueMap {
     }
 
     @Override
-    public ValueNumber asNumber() throws ValueTranslationException {
+    public ValueNumber asNumeric() throws ValueTranslationException {
         throw new UnsupportedOperationException("Cannot convert a map object into a number");
     }
 
