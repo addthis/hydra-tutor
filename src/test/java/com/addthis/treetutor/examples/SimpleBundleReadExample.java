@@ -13,6 +13,8 @@
  */
 package com.addthis.treetutor.examples;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.addthis.bundle.core.Bundle;
 import com.addthis.codec.json.CodecJSON;
 import com.addthis.hydra.task.run.TaskRunConfig;
@@ -57,7 +59,7 @@ public class SimpleBundleReadExample {
             e.printStackTrace();
         }
 
-        dataSource.init(taskRunConfig);
+        dataSource.init(taskRunConfig, new AtomicBoolean());
 
         try {
             long bundleCount = 0;

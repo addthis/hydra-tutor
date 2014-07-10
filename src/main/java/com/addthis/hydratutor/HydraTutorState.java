@@ -17,18 +17,15 @@ import com.addthis.bundle.value.ValueArray;
 import com.addthis.bundle.value.ValueFactory;
 import com.addthis.bundle.value.ValueObject;
 import com.addthis.bundle.value.ValueString;
-import com.addthis.codec.Codec;
 import com.addthis.codec.annotations.Pluggable;
 import com.addthis.codec.config.CodecConfig;
 import com.addthis.codec.json.CodecExceptionLineNumber;
 import com.addthis.codec.json.CodecJSON;
-import com.addthis.codec.plugins.PluginMap;
 import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
 import com.addthis.hydra.data.filter.value.ValueFilter;
 import com.addthis.hydra.data.filter.value.ValueFilterEvalJava;
-import com.addthis.hydra.data.tree.TreeNodeData;
 import com.addthis.hydratutor.bundle.JSONBundle;
 import com.addthis.hydratutor.bundle.JSONBundleFormat;
 import com.addthis.hydratutor.bundle.JSONBundleMap;
@@ -42,6 +39,8 @@ import java.util.concurrent.Future;
 
 import com.addthis.basis.util.Parameter;
 
+import com.google.common.collect.BiMap;
+
 public class HydraTutorState {
 
     private static final boolean allowEvalJava = Parameter.boolValue("allow.eval.java", false);
@@ -51,16 +50,16 @@ public class HydraTutorState {
     FilterCache filterCache;
     volatile Future<JSONObject> future;
 
-    static final PluginMap vClassMap;
-    static final PluginMap bClassMap;
+    static final BiMap<String, Class<?>> vClassMap;
+    static final BiMap<String, Class<?>> bClassMap;
 
     static {
         Pluggable valueFilterPluggable = ValueFilter.class.getAnnotation(Pluggable.class);
         Pluggable bundleFilterPluggable = BundleFilter.class.getAnnotation(Pluggable.class);
 
         PluginRegistry pluginRegistry = CodecConfig.getDefault().pluginRegistry();
-        vClassMap = pluginRegistry.asMap().get(valueFilterPluggable.value());
-        bClassMap = pluginRegistry.asMap().get(bundleFilterPluggable.value());
+        vClassMap = pluginRegistry.asMap().get(valueFilterPluggable.value()).asBiMap();
+        bClassMap = pluginRegistry.asMap().get(bundleFilterPluggable.value()).asBiMap();
     }
 
     private static final String errorMsg = "Cannot parse the input %s. " +
@@ -209,26 +208,26 @@ public class HydraTutorState {
                 List<CodecExceptionLineNumber> codecErrors = new ArrayList<CodecExceptionLineNumber>();
 
                 if (filtertype.equals("auto")) {
-                    if (vClassMap.getClass(stype) != null && bClassMap.getClass(stype) != null) {
+                    if (vClassMap.get(stype) != null && bClassMap.get(stype) != null) {
                         throw new IllegalStateException(
                                 "The 'op : \"" + stype + "\"' can be interpreted as either" +
                                 " a bundle filter or a value filter. Please select 'bundle'" +
                                 " or 'value' and retry.");
                     }
-                    if (vClassMap.getClass(stype) != null) {
+                    if (vClassMap.get(stype) != null) {
                         vFilter = CodecJSON.decodeObject(ValueFilter.class, filterJSONObject, codecErrors);
                         vFilter.setup();
-                    } else if (bClassMap.getClass(stype) != null) {
+                    } else if (bClassMap.get(stype) != null) {
                         bFilter = CodecJSON.decodeObject(BundleFilter.class, filterJSONObject, codecErrors);
                         bFilter.initialize();
                     } else {
                         throw new IllegalStateException("Cannot recognize the 'op : \"" + stype + "\"'");
                     }
                 } else if (filtertype.equals("bundle")) {
-                    if (bClassMap.getClass(stype) != null) {
+                    if (bClassMap.get(stype) != null) {
                         bFilter = CodecJSON.decodeObject(BundleFilter.class, filterJSONObject, codecErrors);
                         bFilter.initialize();
-                    } else if (vClassMap.getClass(stype) != null) {
+                    } else if (vClassMap.get(stype) != null) {
                         throw new IllegalStateException("It looks like you have specified a value filter " +
                                                         "and selected the radio box for bundle filters. " +
                                                         "Please select 'auto' or change the filter 'op : \"" + stype + "\"'");
@@ -236,10 +235,10 @@ public class HydraTutorState {
                         throw new IllegalStateException("Cannot recognize the bundle filter 'op : \"" + stype + "\"'");
                     }
                 } else {
-                    if (vClassMap.getClass(stype) != null) {
+                    if (vClassMap.get(stype) != null) {
                         vFilter = CodecJSON.decodeObject(ValueFilter.class, filterJSONObject, codecErrors);
                         vFilter.setup();
-                    } else if (bClassMap.getClass(stype) != null) {
+                    } else if (bClassMap.get(stype) != null) {
                         throw new IllegalStateException("It looks like you have specified a bundle filter " +
                                                         "and selected the radio box for value filters. " +
                                                         "Please select 'auto' or change the filter 'op : \"" + stype + "\"'");

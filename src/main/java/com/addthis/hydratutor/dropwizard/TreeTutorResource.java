@@ -339,7 +339,7 @@ public class TreeTutorResource {
                 while (keys.hasNext()) {
                     JSONObject dataJSON = data.getJSONObject(keys.next().toString());
                     String dataString = dataJSON.getString("t");
-                    String dataType = pluginMap.getClass(dataString).getSimpleName();
+                    String dataType = pluginMap.asBiMap().get(dataString).getSimpleName();
                     links.put(dataType, "http://oss-docs.addthiscode.net/hydra/latest/user-reference/com/addthis/hydra/data/tree/prop/" + dataType + ".Config.html");
                 }
 
