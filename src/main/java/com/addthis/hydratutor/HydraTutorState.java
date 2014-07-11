@@ -19,8 +19,6 @@ import com.addthis.bundle.value.ValueObject;
 import com.addthis.bundle.value.ValueString;
 import com.addthis.codec.annotations.Pluggable;
 import com.addthis.codec.config.CodecConfig;
-import com.addthis.codec.json.CodecExceptionLineNumber;
-import com.addthis.codec.json.CodecJSON;
 import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
@@ -32,14 +30,15 @@ import com.addthis.hydratutor.bundle.JSONBundleMap;
 import com.addthis.maljson.JSONException;
 import com.addthis.maljson.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Future;
 
 import com.addthis.basis.util.Parameter;
 
 import com.google.common.collect.BiMap;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 public class HydraTutorState {
 
@@ -178,88 +177,81 @@ public class HydraTutorState {
         }
     }
 
-    public String filter(String input, String filter, String filtertype) throws Exception {
+    public String filter(String input, String filter, String filterType) throws Exception {
         try {
             if (input == null || filter == null) {
                 return "";
             }
 
-            if (filtertype == null || !(filtertype.equals("auto") || filtertype.equals("value") ||
-                                        filtertype.equals("bundle"))) {
+            if (filterType == null || !(filterType.equals("auto") || filterType.equals("value") ||
+                                        filterType.equals("bundle"))) {
                 throw new IllegalStateException("Internal error: the filter type " +
                                                 "is not one of \"auto\", \"bundle\", or \"value\".");
             }
 
-
             filter = filter.trim();
             input = input.trim();
 
-            FilterCache testCache = new FilterCache(filter, filtertype);
+            FilterCache testCache = new FilterCache(filter, filterType);
 
             if (filterCache == null || !filterCache.equals(testCache)) {
                 filterCache = testCache;
                 vFilter = null;
                 bFilter = null;
 
-                JSONObject filterJSONObject = new JSONObject(filterCache.filter);
+                Config filterConfig = ConfigFactory.parseString(filterCache.filter);
 
-                String stype = (filterJSONObject).optString("op", null);
-
-                List<CodecExceptionLineNumber> codecErrors = new ArrayList<CodecExceptionLineNumber>();
-
-                if (filtertype.equals("auto")) {
-                    if (vClassMap.get(stype) != null && bClassMap.get(stype) != null) {
-                        throw new IllegalStateException(
-                                "The 'op : \"" + stype + "\"' can be interpreted as either" +
-                                " a bundle filter or a value filter. Please select 'bundle'" +
-                                " or 'value' and retry.");
-                    }
-                    if (vClassMap.get(stype) != null) {
-                        vFilter = CodecJSON.decodeObject(ValueFilter.class, filterJSONObject, codecErrors);
-                        vFilter.setup();
-                    } else if (bClassMap.get(stype) != null) {
-                        bFilter = CodecJSON.decodeObject(BundleFilter.class, filterJSONObject, codecErrors);
-                        bFilter.initialize();
-                    } else {
-                        throw new IllegalStateException("Cannot recognize the 'op : \"" + stype + "\"'");
-                    }
-                } else if (filtertype.equals("bundle")) {
-                    if (bClassMap.get(stype) != null) {
-                        bFilter = CodecJSON.decodeObject(BundleFilter.class, filterJSONObject, codecErrors);
-                        bFilter.initialize();
-                    } else if (vClassMap.get(stype) != null) {
-                        throw new IllegalStateException("It looks like you have specified a value filter " +
-                                                        "and selected the radio box for bundle filters. " +
-                                                        "Please select 'auto' or change the filter 'op : \"" + stype + "\"'");
-                    } else {
-                        throw new IllegalStateException("Cannot recognize the bundle filter 'op : \"" + stype + "\"'");
-                    }
-                } else {
-                    if (vClassMap.get(stype) != null) {
-                        vFilter = CodecJSON.decodeObject(ValueFilter.class, filterJSONObject, codecErrors);
-                        vFilter.setup();
-                    } else if (bClassMap.get(stype) != null) {
-                        throw new IllegalStateException("It looks like you have specified a bundle filter " +
-                                                        "and selected the radio box for value filters. " +
-                                                        "Please select 'auto' or change the filter 'op : \"" + stype + "\"'");
-                    } else {
-                        throw new IllegalStateException("Cannot recognize the value filter 'op : \"" + stype + "\"'");
-                    }
+                String stype = null;
+                if (filterConfig.hasPath("op")) {
+                    stype = filterConfig.getString("op");
                 }
 
-                if (codecErrors.size() > 0) {
-                    StringBuilder message = new StringBuilder();
-                    Iterator<CodecExceptionLineNumber> iter = codecErrors.iterator();
-                    while (iter.hasNext()) {
-                        CodecExceptionLineNumber ex = iter.next();
-                        message.append(ex.getMessage());
-                        if (iter.hasNext()) {
-                            message.append("\n");
+                if (filterType.equals("auto")) {
+                    if (stype != null) {
+                        if (vClassMap.get(stype) != null && bClassMap.get(stype) != null) {
+                            throw new IllegalStateException(
+                                    "The 'op' : \"" + stype + "\" can be interpreted as either" +
+                                    " a bundle filter or a value filter. Please select 'bundle'" +
+                                    " or 'value' and retry.");
+                        }
+                        if (vClassMap.get(stype) != null) {
+                            vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
+                            vFilter.setup();
+                        } else if (bClassMap.get(stype) != null) {
+                            bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
+                            bFilter.initialize();
+                        } else {
+                            throw new IllegalStateException("Cannot recognize the 'op' : \"" + stype + "\"");
+                        }
+                    } else {
+                        try {
+                            vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
+                            vFilter.setup();
+                        } catch (Exception ignored) {
+                        }
+                        try {
+                            bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
+                            bFilter.initialize();
+                        } catch (Exception ignored) {
+                        }
+                        if ((vFilter != null) && (bFilter != null)) {
+                            throw new IllegalStateException(
+                                    "The op can be interpreted as either" +
+                                    " a bundle filter or a value filter. Please select 'bundle'" +
+                                    " or 'value' and retry.");
+                        } else if ((vFilter == null) && (bFilter == null)) {
+                            throw new IllegalStateException(
+                                    "Cannot convert the filter to a bundle filter or a value filter. " +
+                                    "Specify 'bundle' or 'value' for more information");
                         }
                     }
-                    throw new IllegalStateException(message.toString());
+                } else if (filterType.equals("bundle")) {
+                    bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
+                    bFilter.initialize();
+                } else {
+                    vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
+                    vFilter.setup();
                 }
-
             }
 
             String[] inputs = input.split("[\\r\\n]+");
