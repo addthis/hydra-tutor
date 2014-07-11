@@ -241,7 +241,7 @@ public class HydraTutorState {
                                     " or 'value' and retry.");
                         } else if ((vFilter == null) && (bFilter == null)) {
                             throw new IllegalStateException(
-                                    "Cannot convert the filter to neither a bundle filter nor a value filter. " +
+                                    "Cannot convert the filter to a bundle filter or a value filter. " +
                                     "Specify 'bundle' or 'value' for more information");
                         }
                     }
