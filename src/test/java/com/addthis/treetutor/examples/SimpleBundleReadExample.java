@@ -59,7 +59,7 @@ public class SimpleBundleReadExample {
             e.printStackTrace();
         }
 
-        dataSource.init(taskRunConfig, new AtomicBoolean());
+        dataSource.init(taskRunConfig);
 
         try {
             long bundleCount = 0;
