@@ -238,7 +238,7 @@ $(document).ready(function()
                             $("#query-button").click();
                         }
                     });
-                    var tree = $("#tree").data("fancytree").getTree();
+                    var tree = $("#tree").data("ui-fancytree").getTree();
                     tree.reload(data);
                     gotData = true;
                     step = false;
@@ -319,7 +319,7 @@ $(document).ready(function()
                         $("#query-button").click();
                     }
                 });
-                var tree = $("#tree").data("fancytree").getTree();
+                var tree = $("#tree").data("ui-fancytree").getTree();
                 tree.reload(data);
                 $("#tree").fancytree("getRootNode").visit(function(node)
                 {
@@ -403,7 +403,7 @@ $(document).ready(function()
                             $("#query-button").click();
                         }
                     });
-                    var tree = $("#tree").data("fancytree").getTree();
+                    var tree = $("#tree").data("ui-fancytree").getTree();
                     tree.reload(data);
                     $("#tree").fancytree("getRootNode").visit(function(node)
                     {
@@ -636,7 +636,7 @@ $(document).ready(function()
         // lookup local storage and delete
         if(gotData == true)
         {
-            $("#tree").data("fancytree").destroy();
+            $("#tree").data("ui-fancytree").destroy();
             $.ajax(
             {
                 url: "/tree/reset",
@@ -666,7 +666,7 @@ $(document).ready(function()
         $("#links").empty();
         if(gotData == true)
         {
-            $("#tree").data("fancytree").destroy();
+            $("#tree").data("ui-fancytree").destroy();
         }
         $.ajax(
         {
