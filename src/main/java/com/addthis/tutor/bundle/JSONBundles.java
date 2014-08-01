@@ -55,12 +55,11 @@ public final class JSONBundles {
         return jsonInput;
     }
 
-    /**
-     * @param input
-     * @return
-     * @throws IllegalStateException
-     */
-    public static ValueObject parseValue(String input) throws IllegalStateException, JSONException {
+    public static ValueObject parseValue(String input) throws JSONException {
+        return parseValue(input, false);
+    }
+
+    public static ValueObject parseValue(String input, boolean unquotedStrings) throws JSONException {
         if (input == null) {
             return null;
         }
@@ -95,26 +94,29 @@ public final class JSONBundles {
                 ValueArray valueArray = ValueFactory.createArray(tokens.size());
 
                 for (int i = 0; i < tokens.size(); i++) {
-                    valueArray.add(parseValue(tokens.get(i)));
+                    valueArray.add(parseValue(tokens.get(i), unquotedStrings));
                 }
 
                 return valueArray;
 
             }
         }
+        if (unquotedStrings) {
+            return ValueFactory.create(input);
+        }
         if (input.indexOf('.') >= 0 || input.equals("NaN")) {
             try {
                 double dValue = Double.parseDouble(input);
                 return ValueFactory.create(dValue);
             } catch (NumberFormatException ex) {
-                throw new IllegalStateException(generateErrorMessage(input));
+                throw new IllegalArgumentException(generateErrorMessage(input), ex);
             }
         } else {
             try {
                 long lValue = Long.parseLong(input);
                 return ValueFactory.create(lValue);
             } catch (NumberFormatException ex) {
-                throw new IllegalStateException(generateErrorMessage(input));
+                throw new IllegalArgumentException(generateErrorMessage(input), ex);
             }
         }
     }

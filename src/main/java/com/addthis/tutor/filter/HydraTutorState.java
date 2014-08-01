@@ -196,7 +196,6 @@ public class HydraTutorState {
             vFilter = null;
             throw ex;
         }
-
     }
 
     public void reset() {

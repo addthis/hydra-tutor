@@ -13,10 +13,11 @@
  */
 package com.addthis.tutor.tree;
 
+import javax.annotation.Syntax;
+
 import java.io.File;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import com.addthis.basis.util.Files;
 
@@ -52,9 +53,9 @@ public class TutorTree {
      * @param input         - source of data to populate the tree.
      * @param treeStructure - the specified JSON tree structure.
      */
-    public TutorTree(String input, String treeStructure, File dir) throws Exception {
-        treeInput = new TreeInput(input);
+    public TutorTree(String input, @Syntax("HOCON") String treeStructure, File dir) throws Exception {
         mapper = Configs.decodeObject(TreeMapper.class, treeStructure);
+        treeInput = new TreeInput(input, mapper.getFormat(), mapper);
         treeArray = new JSONArray();
         inserted = false;
         current = null;
@@ -77,18 +78,9 @@ public class TutorTree {
      * Processes the bundles and adds them to the treeIterator.
      */
     public void processBundles() throws Exception {
-        while (treeInput.hasNextBundle()) {
-            TreeBundle bundle = treeInput.getNextBundle();
-            int keyIndex = 0;
-            while (keyIndex < treeInput.numKeys()) {
-                if (!bundle.hasNext()) {
-                    mapper.sendComplete();
-                    throw new NoSuchElementException();
-                }
-                bundle.setValue(treeInput.getKey(keyIndex));
-                keyIndex++;
-            }
-            mapper.send(bundle.toListBundle());
+        while (treeInput.hasNext()) {
+            Bundle bundle = treeInput.next();
+            mapper.send(bundle);
         }
         mapper.sendComplete();
         readTree = new ReadTree(new File(dir, "data"));
