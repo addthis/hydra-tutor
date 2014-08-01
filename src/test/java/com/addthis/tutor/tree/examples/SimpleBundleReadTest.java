@@ -21,14 +21,14 @@ import com.addthis.hydra.task.run.TaskRunConfig;
 import com.addthis.hydra.task.source.TaskDataSource;
 import com.addthis.maljson.JSONObject;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-/**
- * A simple class to read bundles from a data source using meshy
- */
-public class SimpleBundleReadExample {
+/** A simple class to read bundles from a data source using meshy */
+@Ignore
+public class SimpleBundleReadTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -36,7 +36,7 @@ public class SimpleBundleReadExample {
     private static final String INPUT_JOB = "077b0af0-eac8-4829-b54e-2b644e086404";
 
     public static void main(String[] args) throws IOException {
-        new SimpleBundleReadExample().simpleExample();
+        new SimpleBundleReadTest().simpleExample();
     }
 
     @Test public void simpleExample() throws IOException {
