@@ -22,6 +22,7 @@ import com.addthis.basis.util.Files;
 
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.table.DataTable;
+import com.addthis.codec.config.Configs;
 import com.addthis.codec.json.CodecJSON;
 import com.addthis.hydra.data.tree.DataTreeNode;
 import com.addthis.hydra.data.tree.ReadTree;
@@ -53,7 +54,7 @@ public class TutorTree {
      */
     public TutorTree(String input, String treeStructure, File dir) throws Exception {
         treeInput = new TreeInput(input);
-        mapper = CodecJSON.decodeObject(TreeMapper.class, new JSONObject(treeStructure));
+        mapper = Configs.decodeObject(TreeMapper.class, treeStructure);
         treeArray = new JSONArray();
         inserted = false;
         current = null;

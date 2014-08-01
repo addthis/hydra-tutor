@@ -658,7 +658,7 @@ $(document).ready(function()
         path = "";
         ops = "";
         inputbox.setValue("");
-        configbox.setValue("{\n\t\"type\":\"tree\",\n\t\"live\":true,\n\t\"root\":{\"path\":\"Tutor Tree\"},\n\t\"paths\":\n\t{\n\t\t\"Tutor Tree\":\n\t\t[\n\t\t\t{\"type\":\"const\", \"value\":\"INSERT PATH HERE\"}\n\t\t]\n\t}\n}");
+        configbox.setValue("paths.root: [\n  {const = root}\n]");
         $("#path").val("");
         $("#ops").val("");
         $("#resultsTable").empty();

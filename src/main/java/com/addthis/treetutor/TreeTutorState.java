@@ -32,17 +32,9 @@ public class TreeTutorState {
     int stepOffset = 0;
     boolean built;
 
-    private static final String defaultConfiguration = "{\n" +
-                                                       "    type:\"tree\",\n" +
-                                                       "    root:{path:\"ROOT\"},\n" +
-                                                       "    paths:\n" +
-                                                       "    {\n" +
-                                                       "        \"ROOT\":\n" +
-                                                       "        [\n" +
-                                                       "            {type:\"const\", value:\"root\"}\n" +
-                                                       "        ]\n" +
-                                                       "    }\n" +
-                                                       "}";
+    private static final String defaultConfiguration = "paths.root: [\n" +
+                                                       "  {const = root}\n" +
+                                                       "]";
 
 
     /**
