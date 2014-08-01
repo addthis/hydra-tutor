@@ -11,7 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.addthis.hydratutor;
+package com.addthis.tutor.filter;
+
+import java.util.List;
+import java.util.concurrent.Future;
+
+import com.addthis.basis.util.Parameter;
 
 import com.addthis.bundle.value.ValueArray;
 import com.addthis.bundle.value.ValueFactory;
@@ -24,16 +29,11 @@ import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
 import com.addthis.hydra.data.filter.value.ValueFilter;
 import com.addthis.hydra.data.filter.value.ValueFilterEvalJava;
-import com.addthis.hydratutor.bundle.JSONBundle;
-import com.addthis.hydratutor.bundle.JSONBundleFormat;
-import com.addthis.hydratutor.bundle.JSONBundleMap;
+import com.addthis.tutor.bundle.JSONBundle;
+import com.addthis.tutor.bundle.JSONBundleFormat;
+import com.addthis.tutor.bundle.JSONBundleMap;
 import com.addthis.maljson.JSONException;
 import com.addthis.maljson.JSONObject;
-
-import java.util.List;
-import java.util.concurrent.Future;
-
-import com.addthis.basis.util.Parameter;
 
 import com.google.common.collect.BiMap;
 
@@ -65,11 +65,11 @@ public class HydraTutorState {
                                            "You should place quotes around your input " +
                                            "to have it interpreted as a string.";
 
-    private String generateErrorMessage(String input) {
+    private static String generateErrorMessage(String input) {
         return String.format(errorMsg, input);
     }
 
-    private JSONObject parseBundle(String input) throws JSONException {
+    private static JSONObject parseBundle(String input) throws JSONException {
         if (input == null) {
             return null;
         }
@@ -96,7 +96,7 @@ public class HydraTutorState {
      * @return
      * @throws IllegalStateException
      */
-    private ValueObject parseValue(String input) throws IllegalStateException, JSONException {
+    private static ValueObject parseValue(String input) throws IllegalStateException, JSONException {
         if (input == null) {
             return null;
         }
@@ -155,7 +155,7 @@ public class HydraTutorState {
         }
     }
 
-    private String formatOutput(ValueObject output) {
+    private static String formatOutput(ValueObject output) {
         if (output == null) {
             return "(null)";
         } else if (output instanceof ValueString) {

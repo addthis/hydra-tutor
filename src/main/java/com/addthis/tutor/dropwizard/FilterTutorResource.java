@@ -11,15 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.addthis.hydratutor.dropwizard;
-
-import com.addthis.hydratutor.HydraTutorState;
-import com.addthis.maljson.JSONObject;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
-import com.sun.jersey.api.core.HttpContext;
+package com.addthis.tutor.dropwizard;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -42,6 +34,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import com.addthis.maljson.JSONObject;
+import com.addthis.tutor.filter.HydraTutorState;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
+import com.sun.jersey.api.core.HttpContext;
 
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +92,7 @@ public class FilterTutorResource {
             OutputStreamAppender appender = ThreadLocalAppender.threadLocalStream.get();
             if (appender == null) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                Logger template = (Logger) LoggerFactory.getLogger("com.addthis.hydratutor.dropwizard.FilterTutorResource");
+                Logger template = (Logger) LoggerFactory.getLogger("com.addthis.tutor.dropwizard.FilterTutorResource");
                 LoggerContext context = template.getLoggerContext();
                 appender = new OutputStreamAppender();
                 PatternLayoutEncoder encoder = new PatternLayoutEncoder();

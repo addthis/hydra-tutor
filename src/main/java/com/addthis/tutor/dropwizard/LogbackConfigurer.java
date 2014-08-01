@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.addthis.hydratutor.dropwizard;
+package com.addthis.tutor.dropwizard;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -20,7 +20,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.yammer.dropwizard.ConfiguredBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
-import com.yammer.dropwizard.logging.AsyncAppender;
 
 import org.slf4j.LoggerFactory;
 

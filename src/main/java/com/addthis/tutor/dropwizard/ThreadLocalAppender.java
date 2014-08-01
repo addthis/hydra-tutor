@@ -11,28 +11,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.addthis.treetutor;
+package com.addthis.tutor.dropwizard;
 
-import com.google.common.cache.Cache;
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.OutputStreamAppender;
 
-import java.io.File;
+public class ThreadLocalAppender<E> extends AppenderBase<E> {
 
-import com.addthis.basis.util.Files;
+    static ThreadLocal<OutputStreamAppender> threadLocalStream = new ThreadLocal<>();
 
-public class TreeTutorShutdownThread extends Thread {
-
-    private final Cache<String, TreeTutorState> userState;
-
-    public TreeTutorShutdownThread(Cache<String, TreeTutorState> userState) {
-        super("TreeTutorShutdownThread");
-        this.userState = userState;
+    @Override
+    public void start() {
+        super.start();
     }
 
     @Override
-    public void run() {
-        for (TreeTutorState state : userState.asMap().values()) {
-            File dir = state.getDir();
-            Files.deleteDir(dir);
+    protected void append(E loggingevent) {
+        OutputStreamAppender appender = threadLocalStream.get();
+        if (appender != null) {
+            threadLocalStream.get().doAppend(loggingevent);
         }
     }
 }

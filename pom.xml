@@ -101,7 +101,7 @@
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.addthis.hydratutor.dropwizard.HydraTutorService</Main-Class>
+                                        <Main-Class>com.addthis.tutor.dropwizard.HydraTutorService</Main-Class>
                                         <Premain-Class>com.addthis.basis.util.MemoryCounter</Premain-Class>
                                         <Agent-Class>com.addthis.basis.util.MemoryCounter</Agent-Class>
                                         <Can-Redefine-Classes>true</Can-Redefine-Classes>

@@ -11,24 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.addthis.hydratutor.dropwizard;
-
-import com.addthis.bundle.table.DataTable;
-import com.addthis.codec.Codec;
-import com.addthis.codec.annotations.Pluggable;
-import com.addthis.codec.config.CodecConfig;
-import com.addthis.codec.plugins.PluginMap;
-import com.addthis.codec.plugins.PluginRegistry;
-import com.addthis.hydra.data.tree.TreeNodeData;
-import com.addthis.maljson.JSONException;
-import com.addthis.maljson.JSONObject;
-import com.addthis.treetutor.TreeRemovalListener;
-import com.addthis.treetutor.TreeTutorShutdownThread;
-import com.addthis.treetutor.TutorTree;
-import com.addthis.treetutor.TreeTutorState;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+package com.addthis.tutor.dropwizard;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -45,6 +28,22 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import com.addthis.basis.util.Files;
+
+import com.addthis.bundle.table.DataTable;
+import com.addthis.codec.annotations.Pluggable;
+import com.addthis.codec.config.CodecConfig;
+import com.addthis.codec.plugins.PluginMap;
+import com.addthis.codec.plugins.PluginRegistry;
+import com.addthis.hydra.data.tree.TreeNodeData;
+import com.addthis.maljson.JSONException;
+import com.addthis.maljson.JSONObject;
+import com.addthis.tutor.tree.TreeRemovalListener;
+import com.addthis.tutor.tree.TreeTutorShutdownThread;
+import com.addthis.tutor.tree.TreeTutorState;
+import com.addthis.tutor.tree.TutorTree;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * Resource class for TreeTutor. Provides resources for building and querying a tree, resetting the user's session, and
