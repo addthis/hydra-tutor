@@ -13,12 +13,6 @@
  */
 package com.addthis.tutor.tree;
 
-import java.io.File;
-
-import java.nio.file.Paths;
-
-import com.addthis.basis.util.Files;
-
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.table.DataTable;
 import com.addthis.maljson.JSONArray;
@@ -26,11 +20,16 @@ import com.addthis.maljson.JSONArray;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertEquals;
 
 public class TutorTreeTest {
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     private String input;
     private String config;
@@ -62,9 +61,7 @@ public class TutorTreeTest {
                  "},\n" +
                  "}\n";
 
-        File path = new File("test");
-        Files.deleteDir(Paths.get("test", "data").toFile());
-        tree = new TutorTree(input, config, path);
+        tree = new TutorTree(input, config, temporaryFolder.newFolder());
     }
 
     @After
