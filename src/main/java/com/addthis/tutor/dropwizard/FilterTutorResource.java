@@ -23,15 +23,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -40,6 +37,7 @@ import com.addthis.tutor.filter.HydraTutorState;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import com.sun.jersey.api.core.HttpContext;
 
@@ -61,18 +59,8 @@ public class FilterTutorResource {
 
     private final Cache<String, HydraTutorState> userState;
 
-    private final ExecutorService executors = Executors.newFixedThreadPool(8, new ExitingThreadFactory());
-
-    // TODO: eliminate this class
-    static class ExitingThreadFactory implements ThreadFactory {
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread retval = new Thread(r);
-            retval.setDaemon(true);
-            return retval;
-        }
-    }
+    private final ExecutorService executors =
+            Executors.newFixedThreadPool(8, new ThreadFactoryBuilder().setDaemon(true).build());
 
     static class FilterCallable implements Callable<JSONObject> {
 
@@ -204,12 +192,4 @@ public class FilterTutorResource {
 
         return "ok";
     }
-
-    private static String printStackTrace(Throwable t) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        t.printStackTrace(pw);
-        return sw.toString();
-    }
-
 }
