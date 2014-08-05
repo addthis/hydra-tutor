@@ -13,6 +13,7 @@
  */
 package com.addthis.tutor.bundle;
 
+import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.core.BundleField;
 import com.addthis.bundle.core.BundleFormat;
 
@@ -79,4 +80,8 @@ public class JSONBundleFormat implements BundleFormat {
     }
 
 
+    @Override
+    public Bundle createBundle() {
+        throw new UnsupportedOperationException();
+    }
 }

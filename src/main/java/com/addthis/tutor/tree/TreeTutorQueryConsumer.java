@@ -90,8 +90,8 @@ public class TreeTutorQueryConsumer implements DataChannelOutput {
     }
 
     @Override
-    public void sourceError(DataChannelError ex) {
-        exception = new QueryException(ex);
+    public void sourceError(Throwable throwable) {
+        exception = new QueryException(throwable);
         sendComplete();
     }
 
