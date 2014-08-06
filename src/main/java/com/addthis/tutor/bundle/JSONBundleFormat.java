@@ -13,13 +13,14 @@
  */
 package com.addthis.tutor.bundle;
 
-import com.addthis.bundle.core.Bundle;
-import com.addthis.bundle.core.BundleField;
-import com.addthis.bundle.core.BundleFormat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import com.addthis.bundle.core.Bundle;
+import com.addthis.bundle.core.BundleField;
+import com.addthis.bundle.core.BundleFormat;
+import com.addthis.maljson.JSONObject;
 
 public class JSONBundleFormat implements BundleFormat {
 
@@ -79,9 +80,8 @@ public class JSONBundleFormat implements BundleFormat {
         };
     }
 
-
     @Override
     public Bundle createBundle() {
-        throw new UnsupportedOperationException();
+        return new JSONBundle(new JSONObject(), this);
     }
 }

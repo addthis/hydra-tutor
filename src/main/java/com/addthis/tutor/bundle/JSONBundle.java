@@ -29,8 +29,8 @@ import com.addthis.maljson.JSONObject;
 
 public class JSONBundle implements Bundle {
 
-    final private JSONObject json;
-    final private JSONBundleFormat format;
+    private final JSONObject json;
+    private final JSONBundleFormat format;
 
     public JSONBundle(JSONObject json, JSONBundleFormat format) {
         this.json = json;
@@ -163,12 +163,11 @@ public class JSONBundle implements Bundle {
 
     @Override
     public Bundle createBundle() {
-        return new JSONBundle(new JSONObject(), format);
+        return format.createBundle();
     }
 
     @Override
     public Iterator<BundleField> iterator() {
         return format.iterator();
     }
-
 }
