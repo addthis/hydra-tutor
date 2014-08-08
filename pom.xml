@@ -2,199 +2,251 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<!--
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+  <!--
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+      http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
-    <description>A web application for learning and experimentation with Hydra</description>
-    <parent>
-        <artifactId>jar-pom</artifactId>
-        <groupId>com.addthis.common.build.maven.pom</groupId>
-        <version>3.1.0</version>
-    </parent>
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+  -->
+  <description>A web application for learning and experimentation with Hydra</description>
+  <parent>
+    <artifactId>jar-pom</artifactId>
+    <groupId>com.addthis.common.build.maven.pom</groupId>
+    <version>3.1.0</version>
+  </parent>
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>hydra-tutor</groupId>
-    <artifactId>hydra-tutor</artifactId>
-    <name>hydra-tutor</name>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <licenses>
-      <license>
-        <name>Apache License, Version 2.0</name>
-        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      </license>
-    </licenses>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>hydra-tutor</groupId>
+  <artifactId>hydra-tutor</artifactId>
+  <name>hydra-tutor</name>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-    <profiles>
-        <profile>
-            <id>bdbje</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sleepycat</groupId>
-                    <artifactId>je</artifactId>
-                    <version>5.0.73</version>
-                    <scope>compile</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <allowMajorUpdates>true</allowMajorUpdates>
-                    <allowMinorUpdates>true</allowMinorUpdates>
-                    <allowSnapshots>true</allowSnapshots>
-                    <includes>
-                        <include>com.addthis.hydra:*</include>
-                    </includes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <shadedClassifierName>exec</shadedClassifierName>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>reference.conf</resource>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>application.conf</resource>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>com.addthis.tutor.dropwizard.HydraTutorService</Main-Class>
-                                        <Premain-Class>com.addthis.basis.util.MemoryCounter</Premain-Class>
-                                        <Agent-Class>com.addthis.basis.util.MemoryCounter</Agent-Class>
-                                        <Can-Redefine-Classes>true</Can-Redefine-Classes>
-                                        <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-
-    <dependencies>
+  <profiles>
+    <profile>
+      <id>bdbje</id>
+      <dependencies>
         <dependency>
-            <groupId>com.yammer.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-            <version>0.6.2</version>
+          <groupId>com.sleepycat</groupId>
+          <artifactId>je</artifactId>
+          <version>5.0.73</version>
+          <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.yammer.dropwizard</groupId>
-            <artifactId>dropwizard-views</artifactId>
-            <version>0.6.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.addthis.hydra</groupId>
-            <artifactId>hydra-filters</artifactId>
-            <version>4.3.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.addthis.hydra</groupId>
-            <artifactId>hydra-task</artifactId>
-            <version>4.3.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.addthis.hydra</groupId>
-            <artifactId>hydra-main</artifactId>
-            <version>4.3.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.supercsv</groupId>
-            <artifactId>super-csv</artifactId>
-            <version>2.1.0</version>
-        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
-        <!--
-            The sleepycat license has surprisingly strong copyleft
-            properties that do not match the licenses used for the
-            rest of hydra.  It is set as non-transitive to avoid
-            inadvertently pulling it into downstream projects.  In the
-            future hydra should have plugable storage with multiple
-            implementations.
-        -->
-        <dependency>
-            <groupId>com.sleepycat</groupId>
-            <artifactId>je</artifactId>
-            <version>5.0.73</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <allowMajorUpdates>true</allowMajorUpdates>
+          <allowMinorUpdates>true</allowMinorUpdates>
+          <allowSnapshots>true</allowSnapshots>
+          <includes>
+            <include>com.addthis.hydra:*</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <shadedClassifierName>exec</shadedClassifierName>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>reference.conf</resource>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>application.conf</resource>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>com.addthis.tutor.dropwizard.HydraTutorService</Main-Class>
+                    <Premain-Class>com.addthis.basis.util.MemoryCounter</Premain-Class>
+                    <Agent-Class>com.addthis.basis.util.MemoryCounter</Agent-Class>
+                    <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                    <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
-    <reporting>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.9.1</version>
-          <configuration>
-            <configLocation>${dep.plugin.checkstyle.configLocation}</configLocation>
-            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-            <consoleOutput>false</consoleOutput>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <version>0.10</version>
-        </plugin>
-      </plugins>
-    </reporting>
 
-    <scm>
-        <connection>scm:git:git@github.com:addthis/hydra-tutor.git</connection>
-        <developerConnection>scm:git:git@github.com:addthis/hydra-tutor.git</developerConnection>
-        <url>https://github.com/addthis/hydra-tutor</url>
-        <tag>HEAD</tag>
-    </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.yammer.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
+      <version>0.6.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-jdk7</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-joda</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.yammer.dropwizard</groupId>
+      <artifactId>dropwizard-views</artifactId>
+      <version>0.6.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-jdk7</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-joda</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.addthis.hydra</groupId>
+      <artifactId>hydra-filters</artifactId>
+      <version>4.3.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.addthis.hydra</groupId>
+      <artifactId>hydra-task</artifactId>
+      <version>4.3.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.addthis.hydra</groupId>
+      <artifactId>hydra-main</artifactId>
+      <version>4.3.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.supercsv</groupId>
+      <artifactId>super-csv</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+
+    <!--
+        The sleepycat license has surprisingly strong copyleft
+        properties that do not match the licenses used for the
+        rest of hydra.  It is set as non-transitive to avoid
+        inadvertently pulling it into downstream projects.  In the
+        future hydra should have plugable storage with multiple
+        implementations.
+    -->
+    <dependency>
+      <groupId>com.sleepycat</groupId>
+      <artifactId>je</artifactId>
+      <version>5.0.73</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+          <configLocation>${dep.plugin.checkstyle.configLocation}</configLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <consoleOutput>false</consoleOutput>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.10</version>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <scm>
+    <connection>scm:git:git@github.com:addthis/hydra-tutor.git</connection>
+    <developerConnection>scm:git:git@github.com:addthis/hydra-tutor.git</developerConnection>
+    <url>https://github.com/addthis/hydra-tutor</url>
+    <tag>HEAD</tag>
+  </scm>
 
 </project>
