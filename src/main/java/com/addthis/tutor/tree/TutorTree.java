@@ -54,7 +54,8 @@ public class TutorTree {
      * @param treeStructure - the specified JSON tree structure.
      */
     public TutorTree(String input, @Syntax("HOCON") String treeStructure, File dir) throws Exception {
-        mapper = Configs.decodeObject(TreeMapper.class, treeStructure);
+
+        mapper = CodecJSON.INSTANCE.decode(TreeMapper.class, treeStructure.getBytes());
         treeInput = new TreeInput(input, mapper.getFormat(), mapper);
         treeArray = new JSONArray();
         inserted = false;
