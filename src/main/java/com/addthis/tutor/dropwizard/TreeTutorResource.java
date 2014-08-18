@@ -31,7 +31,6 @@ import com.addthis.basis.util.Files;
 
 import com.addthis.bundle.table.DataTable;
 import com.addthis.codec.annotations.Pluggable;
-import com.addthis.codec.config.CodecConfig;
 import com.addthis.codec.plugins.PluginMap;
 import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.tree.TreeNodeData;
@@ -333,7 +332,7 @@ public class TreeTutorResource {
                 JSONObject data = state.getData(path.substring(0, path.length() - 1));
                 Iterator keys = data.keys();
                 Pluggable pluggable = TreeNodeData.class.getAnnotation(Pluggable.class);
-                PluginRegistry pluginRegistry = CodecConfig.getDefault().pluginRegistry();
+                PluginRegistry pluginRegistry = PluginRegistry.defaultRegistry();
                 PluginMap pluginMap = pluginRegistry.asMap().get(pluggable.value());
                 while (keys.hasNext()) {
                     JSONObject dataJSON = data.getJSONObject(keys.next().toString());

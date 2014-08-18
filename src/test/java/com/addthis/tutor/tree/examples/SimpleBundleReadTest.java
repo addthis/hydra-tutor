@@ -16,10 +16,9 @@ package com.addthis.tutor.tree.examples;
 import java.io.IOException;
 
 import com.addthis.bundle.core.Bundle;
-import com.addthis.codec.json.CodecJSON;
+import com.addthis.codec.config.Configs;
 import com.addthis.hydra.task.run.TaskRunConfig;
 import com.addthis.hydra.task.source.TaskDataSource;
-import com.addthis.maljson.JSONObject;
 
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -61,8 +60,7 @@ public class SimpleBundleReadTest {
         TaskDataSource dataSource = null;
 
         try {
-            JSONObject jsonObject = new JSONObject(source);
-            dataSource = CodecJSON.decodeObject(TaskDataSource.class, jsonObject);
+            dataSource = Configs.decodeObject(TaskDataSource.class, source);
         } catch (Exception e) {
             e.printStackTrace();
         }

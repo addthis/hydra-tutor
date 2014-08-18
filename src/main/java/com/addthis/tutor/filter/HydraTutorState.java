@@ -19,7 +19,7 @@ import com.addthis.basis.util.Parameter;
 
 import com.addthis.bundle.value.ValueObject;
 import com.addthis.codec.annotations.Pluggable;
-import com.addthis.codec.config.CodecConfig;
+import com.addthis.codec.config.Configs;
 import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
@@ -54,7 +54,7 @@ public class HydraTutorState {
         Pluggable valueFilterPluggable = ValueFilter.class.getAnnotation(Pluggable.class);
         Pluggable bundleFilterPluggable = BundleFilter.class.getAnnotation(Pluggable.class);
 
-        PluginRegistry pluginRegistry = CodecConfig.getDefault().pluginRegistry();
+        PluginRegistry pluginRegistry = PluginRegistry.defaultRegistry();
         vClassMap = pluginRegistry.asMap().get(valueFilterPluggable.value()).asBiMap();
         bClassMap = pluginRegistry.asMap().get(bundleFilterPluggable.value()).asBiMap();
     }
@@ -97,22 +97,22 @@ public class HydraTutorState {
                                     " or 'value' and retry.");
                         }
                         if (vClassMap.get(stype) != null) {
-                            vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
+                            vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
                             vFilter.setup();
                         } else if (bClassMap.get(stype) != null) {
-                            bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
+                            bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
                             bFilter.initialize();
                         } else {
                             throw new IllegalStateException("Cannot recognize the 'op' : \"" + stype + "\"");
                         }
                     } else {
                         try {
-                            vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
+                            vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
                             vFilter.setup();
                         } catch (Exception ignored) {
                         }
                         try {
-                            bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
+                            bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
                             bFilter.initialize();
                         } catch (Exception ignored) {
                         }
@@ -128,10 +128,10 @@ public class HydraTutorState {
                         }
                     }
                 } else if (filterType.equals("bundle")) {
-                    bFilter = CodecConfig.getDefault().decodeObject(BundleFilter.class, filterConfig);
+                    bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
                     bFilter.initialize();
                 } else {
-                    vFilter = CodecConfig.getDefault().decodeObject(ValueFilter.class, filterConfig);
+                    vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
                     vFilter.setup();
                 }
             }
