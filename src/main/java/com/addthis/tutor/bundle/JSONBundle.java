@@ -113,8 +113,8 @@ public class JSONBundle implements Bundle {
                 value = value.asCustom().asMap();
             case MAP:
                 JSONObject map = new JSONObject();
-                ValueMap<?> asMap = value.asMap();
-                for (ValueMapEntry<?> entry : asMap) {
+                ValueMap asMap = value.asMap();
+                for (ValueMapEntry entry : asMap) {
                     map.put(entry.getKey(), valueToNative(entry.getValue()));
                 }
                 return map;
