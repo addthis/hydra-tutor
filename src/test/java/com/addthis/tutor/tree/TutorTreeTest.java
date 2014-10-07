@@ -13,8 +13,6 @@
  */
 package com.addthis.tutor.tree;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 
 import com.addthis.bundle.core.Bundle;
@@ -27,6 +25,8 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import static org.junit.Assert.assertEquals;
 
 public class TutorTreeTest {
 
@@ -62,7 +62,6 @@ public class TutorTreeTest {
                  "{type:\"value\", key:\"name\"},\n" +
                  "],\n" +
                  "},\n" +
-                 "config.dir:\"" + dir + "\",\n" +
                  "}\n";
 
         tree = new TutorTree(input, config, dir);

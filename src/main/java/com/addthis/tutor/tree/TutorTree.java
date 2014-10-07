@@ -16,6 +16,7 @@ package com.addthis.tutor.tree;
 import javax.annotation.Syntax;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.util.Iterator;
 
@@ -24,6 +25,7 @@ import com.addthis.basis.util.Files;
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.table.DataTable;
 import com.addthis.codec.config.Configs;
+import com.addthis.codec.jackson.Jackson;
 import com.addthis.codec.json.CodecJSON;
 import com.addthis.hydra.data.tree.DataTreeNode;
 import com.addthis.hydra.data.tree.ReadTree;
@@ -32,6 +34,8 @@ import com.addthis.hydra.task.output.tree.TreeMapper;
 import com.addthis.maljson.JSONArray;
 import com.addthis.maljson.JSONException;
 import com.addthis.maljson.JSONObject;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Handles all tree operations for the Tutor such as processing, building, and querying.
@@ -53,7 +57,7 @@ public class TutorTree {
      * @param treeStructure - the specified JSON tree structure.
      */
     public TutorTree(String input, @Syntax("HOCON") String treeStructure, File dir) throws Exception {
-        mapper = Configs.decodeObject(TreeMapper.class, treeStructure);
+        mapper = createMapper(treeStructure, dir);
         treeInput = new TreeInput(input, mapper.getFormat(), mapper);
         treeArray = new JSONArray();
         inserted = false;
@@ -343,5 +347,11 @@ public class TutorTree {
             data = nodeJSON.getJSONObject("data");
         }
         return data;
+    }
+
+    private TreeMapper createMapper(String configuration, File dir) throws IOException {
+        ObjectNode treeConfig = Configs.decodeObject(ObjectNode.class, configuration);
+        treeConfig.with("config").put("dir", dir.toString());
+        return Jackson.defaultCodec().decodeObject(TreeMapper.class, treeConfig);
     }
 }
