@@ -29,7 +29,6 @@ import com.addthis.hydra.data.tree.DataTreeNode;
 import com.addthis.hydra.data.tree.ReadTree;
 import com.addthis.hydra.data.tree.ReadTreeNode;
 import com.addthis.hydra.task.output.tree.TreeMapper;
-import com.addthis.hydra.task.run.TaskRunConfig;
 import com.addthis.maljson.JSONArray;
 import com.addthis.maljson.JSONException;
 import com.addthis.maljson.JSONObject;
@@ -68,10 +67,9 @@ public class TutorTree {
      * Opens the TreeMapper.
      */
     public void openTree(File dir) {
-        TaskRunConfig taskRunConfig = new TaskRunConfig(0, 1, "treeTutor", dir.getAbsolutePath());
         Files.deleteDir(this.dir);
         Files.initDirectory(this.dir);
-        mapper.open(taskRunConfig);
+        mapper.open();
     }
 
     /**

@@ -17,7 +17,6 @@ import java.io.IOException;
 
 import com.addthis.bundle.core.Bundle;
 import com.addthis.codec.config.Configs;
-import com.addthis.hydra.task.run.TaskRunConfig;
 import com.addthis.hydra.task.source.TaskDataSource;
 
 import org.junit.Ignore;
@@ -53,9 +52,8 @@ public class SimpleBundleReadTest {
                         "       type:\"channel\",\n" +
                         "	 },\n" +
                         "    workers:1,\n" +
+                        "    config.dir:\"" + temporaryFolder.newFolder().getName() + "\",\n" +
                         "}\n";
-
-        TaskRunConfig taskRunConfig = new TaskRunConfig(0, 1, temporaryFolder.newFolder().getName());
 
         TaskDataSource dataSource = null;
 
@@ -65,7 +63,7 @@ public class SimpleBundleReadTest {
             e.printStackTrace();
         }
 
-        dataSource.init(taskRunConfig);
+        dataSource.init();
 
         try {
             long bundleCount = 0;

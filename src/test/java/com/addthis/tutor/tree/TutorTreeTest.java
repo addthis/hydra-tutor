@@ -13,6 +13,10 @@
  */
 package com.addthis.tutor.tree;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.table.DataTable;
 import com.addthis.maljson.JSONArray;
@@ -23,8 +27,6 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import static org.junit.Assert.assertEquals;
 
 public class TutorTreeTest {
 
@@ -48,6 +50,7 @@ public class TutorTreeTest {
                 "Data, Lenovo, Aditya\n" +
                 "Data, Mac, Evan\n";
 
+        File dir = temporaryFolder.newFolder();
         config = "{\n" +
                  "type:\"tree\",\n" +
                  "root:{path:\"SAMPLE\"},\n" +
@@ -59,9 +62,10 @@ public class TutorTreeTest {
                  "{type:\"value\", key:\"name\"},\n" +
                  "],\n" +
                  "},\n" +
+                 "config.dir:\"" + dir + "\",\n" +
                  "}\n";
 
-        tree = new TutorTree(input, config, temporaryFolder.newFolder());
+        tree = new TutorTree(input, config, dir);
     }
 
     @After
