@@ -98,22 +98,18 @@ public class HydraTutorState {
                         }
                         if (vClassMap.get(stype) != null) {
                             vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
-                            vFilter.open();
                         } else if (bClassMap.get(stype) != null) {
                             bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
-                            bFilter.open();
                         } else {
                             throw new IllegalStateException("Cannot recognize the 'op' : \"" + stype + "\"");
                         }
                     } else {
                         try {
                             vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
-                            vFilter.open();
                         } catch (Exception ignored) {
                         }
                         try {
                             bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
-                            bFilter.open();
                         } catch (Exception ignored) {
                         }
                         if ((vFilter != null) && (bFilter != null)) {
@@ -129,10 +125,8 @@ public class HydraTutorState {
                     }
                 } else if (filterType.equals("bundle")) {
                     bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
-                    bFilter.open();
                 } else {
                     vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
-                    vFilter.open();
                 }
             }
 
