@@ -19,7 +19,8 @@ import com.addthis.basis.util.Parameter;
 
 import com.addthis.bundle.value.ValueObject;
 import com.addthis.codec.annotations.Pluggable;
-import com.addthis.codec.config.Configs;
+import com.addthis.codec.jackson.CodecJackson;
+import com.addthis.codec.jackson.Jackson;
 import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
@@ -33,6 +34,7 @@ import com.google.common.collect.BiMap;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigResolveOptions;
 
 import static com.addthis.tutor.bundle.JSONBundles.formatOutput;
 import static com.addthis.tutor.bundle.JSONBundles.parseBundle;
@@ -81,7 +83,21 @@ public class HydraTutorState {
                 vFilter = null;
                 bFilter = null;
 
-                Config filterConfig = ConfigFactory.parseString(filterCache.filter);
+                CodecJackson codec = Jackson.defaultCodec();
+                Config filterConfig, config = ConfigFactory.parseString(filterCache.filter);
+
+                if (config.root().containsKey("global")) {
+                    filterConfig = config.root().withoutKey("global").toConfig()
+                                      .resolve(ConfigResolveOptions.defaults().setAllowUnresolved(true));
+                    Config globalDefaults = config.getConfig("global")
+                                                  .withFallback(ConfigFactory.load())
+                                                  .resolve();
+                    filterConfig = filterConfig.resolveWith(globalDefaults);
+                    codec = codec.withConfig(globalDefaults);
+                } else {
+                    filterConfig = config.resolve(ConfigResolveOptions.defaults().setAllowUnresolved(true))
+                                         .resolveWith(ConfigFactory.load());
+                }
 
                 String stype = null;
                 if (filterConfig.hasPath("op")) {
@@ -97,19 +113,19 @@ public class HydraTutorState {
                                     " or 'value' and retry.");
                         }
                         if (vClassMap.get(stype) != null) {
-                            vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
+                            vFilter = codec.decodeObject(ValueFilter.class, filterConfig);
                         } else if (bClassMap.get(stype) != null) {
-                            bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
+                            bFilter = codec.decodeObject(BundleFilter.class, filterConfig);
                         } else {
                             throw new IllegalStateException("Cannot recognize the 'op' : \"" + stype + "\"");
                         }
                     } else {
                         try {
-                            vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
+                            vFilter = codec.decodeObject(ValueFilter.class, filterConfig);
                         } catch (Exception ignored) {
                         }
                         try {
-                            bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
+                            bFilter = codec.decodeObject(BundleFilter.class, filterConfig);
                         } catch (Exception ignored) {
                         }
                         if ((vFilter != null) && (bFilter != null)) {
@@ -124,9 +140,9 @@ public class HydraTutorState {
                         }
                     }
                 } else if (filterType.equals("bundle")) {
-                    bFilter = Configs.decodeObject(BundleFilter.class, filterConfig);
+                    bFilter = codec.decodeObject(BundleFilter.class, filterConfig);
                 } else {
-                    vFilter = Configs.decodeObject(ValueFilter.class, filterConfig);
+                    vFilter = codec.decodeObject(ValueFilter.class, filterConfig);
                 }
             }
 
