@@ -126,14 +126,14 @@ public class JSONBundle implements Bundle {
                 }
                 return arr;
             case INT:
-                return value.asLong();
+                return value.asLong().asNative();
             case FLOAT:
-                return value.asDouble();
+                return value.asDouble().asNative();
             case BYTES:
-                return value.asBytes();
+                return value.asBytes().asNative();
             default:
             case STRING:
-                return value.asString();
+                return value.asString().asNative();
         }
     }
 
