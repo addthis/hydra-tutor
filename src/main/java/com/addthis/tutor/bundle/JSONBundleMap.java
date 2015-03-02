@@ -133,7 +133,7 @@ public class JSONBundleMap implements ValueMap {
     }
 
     @Override public Map<String, Object> asNative() {
-        return (Map<String, Object>) json.asMap().asNative();
+        return json.asValueMap().asNative();
     }
 
     @Override

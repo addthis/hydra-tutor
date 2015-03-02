@@ -13,7 +13,9 @@
  */
 package com.addthis.tutor.bundle;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.core.BundleException;
@@ -56,7 +58,18 @@ public class JSONBundle implements Bundle {
         return map;
     }
 
-    public ValueMap asMap() {
+    @Override
+    public Map<BundleField, ValueObject> asMap() {
+        Map<BundleField, ValueObject> result = new HashMap<>();
+        for (String key : json.keySet()) {
+            Object raw = json.opt(key);
+            Class<?> clazz = raw.getClass();
+            result.put(format.getField(key), createPrimitiveBundle(clazz, raw));
+        }
+        return result;
+    }
+
+    public ValueMap asValueMap() {
         return convertJSONObject(json);
     }
 
