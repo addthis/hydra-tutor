@@ -17,7 +17,7 @@ import com.google.common.cache.Cache;
 
 import java.io.File;
 
-import com.addthis.basis.util.Files;
+import com.addthis.basis.util.LessFiles;
 
 public class TreeTutorShutdownThread extends Thread {
 
@@ -32,7 +32,7 @@ public class TreeTutorShutdownThread extends Thread {
     public void run() {
         for (TreeTutorState state : userState.asMap().values()) {
             File dir = state.getDir();
-            Files.deleteDir(dir);
+            LessFiles.deleteDir(dir);
         }
     }
 }

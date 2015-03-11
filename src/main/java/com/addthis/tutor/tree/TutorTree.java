@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import java.util.Iterator;
 
-import com.addthis.basis.util.Files;
+import com.addthis.basis.util.LessFiles;
 
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.table.DataTable;
@@ -71,8 +71,8 @@ public class TutorTree {
      * Opens the TreeMapper.
      */
     public void openTree(File dir) {
-        Files.deleteDir(this.dir);
-        Files.initDirectory(this.dir);
+        LessFiles.deleteDir(this.dir);
+        LessFiles.initDirectory(this.dir);
         mapper.open();
     }
 

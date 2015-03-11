@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
-import com.addthis.basis.util.Files;
+import com.addthis.basis.util.LessFiles;
 
 import com.addthis.bundle.table.DataTable;
 import com.addthis.codec.annotations.Pluggable;
@@ -65,7 +65,7 @@ public class TreeTutorResource {
     }
 
     private File generatePath(String uid) throws IOException {
-        return Files.createTempDir("treetutor", uid).getAbsoluteFile();
+        return LessFiles.createTempDir("treetutor", uid).getAbsoluteFile();
     }
 
     /**

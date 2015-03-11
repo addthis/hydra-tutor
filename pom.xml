@@ -131,17 +131,17 @@
     <dependency>
       <groupId>com.addthis.hydra</groupId>
       <artifactId>hydra-filters</artifactId>
-      <version>5.2.3-SNAPSHOT</version>
+      <version>5.2.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.addthis.hydra</groupId>
       <artifactId>hydra-task</artifactId>
-      <version>5.2.3-SNAPSHOT</version>
+      <version>5.2.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.addthis.hydra</groupId>
       <artifactId>hydra-main</artifactId>
-      <version>5.2.3-SNAPSHOT</version>
+      <version>5.2.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-collections</groupId>

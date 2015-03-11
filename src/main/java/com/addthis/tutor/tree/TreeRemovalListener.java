@@ -18,7 +18,7 @@ import com.google.common.cache.RemovalNotification;
 
 import java.io.File;
 
-import com.addthis.basis.util.Files;
+import com.addthis.basis.util.LessFiles;
 
 public class TreeRemovalListener implements RemovalListener<String, TreeTutorState> {
 
@@ -26,6 +26,6 @@ public class TreeRemovalListener implements RemovalListener<String, TreeTutorSta
     public void onRemoval(RemovalNotification<String, TreeTutorState> notification) {
         TreeTutorState state = notification.getValue();
         File dir = state.getDir();
-        Files.deleteDir(dir);
+        LessFiles.deleteDir(dir);
     }
 }
