@@ -13,6 +13,8 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+export MAVEN_OPT="-Xmx750m"
+
 PID=`jps -m 2> /dev/null | grep hydra-tutor | cut -f 1 -d ' '`
 iter=0
 
