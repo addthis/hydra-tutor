@@ -25,8 +25,7 @@ import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.core.BundleFactory;
 import com.addthis.bundle.core.BundleField;
 import com.addthis.bundle.core.BundleFormat;
-import com.addthis.maljson.JSONException;
-import com.addthis.tutor.bundle.JSONBundles;
+import com.addthis.tutor.filter.HydraTutorState;
 
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
@@ -86,7 +85,7 @@ public class TreeInput extends AbstractIterator<Bundle> {
                 Bundle bundle = bundleFactory.createBundle();
                 Iterator<String> values = nextRow.iterator();
                 for (BundleField field : fields) {
-                        bundle.setValue(field, JSONBundles.parseValue(values.next()));
+                        bundle.setValue(field, HydraTutorState.toValueObject(values.next()));
                 }
                 return bundle;
             }

@@ -13,12 +13,20 @@
  */
 package com.addthis.tutor.filter;
 
+import java.io.IOException;
+
 import java.util.concurrent.Future;
 
 import com.addthis.basis.util.Parameter;
 
+import com.addthis.bundle.core.Bundle;
+import com.addthis.bundle.core.Bundles;
+import com.addthis.bundle.value.ValueArray;
+import com.addthis.bundle.value.ValueFactory;
+import com.addthis.bundle.value.ValueMap;
 import com.addthis.bundle.value.ValueObject;
 import com.addthis.codec.annotations.Pluggable;
+import com.addthis.codec.config.Configs;
 import com.addthis.codec.jackson.CodecJackson;
 import com.addthis.codec.jackson.Jackson;
 import com.addthis.codec.plugins.PluginRegistry;
@@ -27,9 +35,6 @@ import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
 import com.addthis.hydra.data.filter.value.ValueFilter;
 import com.addthis.hydra.data.filter.value.ValueFilterEvalJava;
 import com.addthis.maljson.JSONObject;
-import com.addthis.tutor.bundle.JSONBundle;
-import com.addthis.tutor.bundle.JSONBundleFormat;
-import com.addthis.tutor.bundle.JSONBundles;
 
 import com.google.common.collect.BiMap;
 
@@ -56,6 +61,18 @@ public class HydraTutorState {
         PluginRegistry pluginRegistry = PluginRegistry.defaultRegistry();
         vClassMap = pluginRegistry.asMap().get(valueFilterPluggable.value()).asBiMap();
         bClassMap = pluginRegistry.asMap().get(bundleFilterPluggable.value()).asBiMap();
+    }
+
+    public static ValueObject toValueObject(String input) throws IOException {
+        if (input == null || input.equals("null")) {
+            return null;
+        }
+        input = input.trim();
+        if (input.startsWith("{") && input.endsWith("}")) {
+            return ValueFactory.decodeMap(input);
+        } else {
+            return ValueFactory.decodeValue(input);
+        }
     }
 
     public String filter(String input, String filter, String filterType) throws Exception {
@@ -155,11 +172,12 @@ public class HydraTutorState {
                 }
 
                 for (String inputString : inputs) {
-                    ValueObject valueInput = JSONBundles.parseValue(inputString);
+
+                    ValueObject valueInput = toValueObject(inputString);
 
                     ValueObject output = vFilter.filter(valueInput);
 
-                    String outputString = JSONBundles.formatOutput(output);
+                    String outputString = (output == null) ? "null" : output.toString();
 
                     outputBuilder.append(outputString);
 
@@ -175,15 +193,11 @@ public class HydraTutorState {
 
                 for (String inputString : inputs) {
 
-                    JSONObject jsonInput = JSONBundles.parseBundle(inputString);
-
-                    JSONBundleFormat format = new JSONBundleFormat();
-
-                    JSONBundle bundle = new JSONBundle(jsonInput, format);
+                    Bundle bundle = Bundles.decode(inputString);
 
                     boolean result = bFilter.filter(bundle);
 
-                    outputBuilder.append(bundle.getJson().toString(2));
+                    outputBuilder.append(Bundles.toJSONObject(bundle).toString(2));
 
                     outputBuilder.append(" =========> filter result is '");
 
