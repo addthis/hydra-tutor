@@ -52,7 +52,7 @@ public class JSONBundle implements Bundle {
             if (raw == null) {
                 return null;
             }
-            return ValueFactory.decodeValue(raw.toString());
+            return ValueFactory.decodeValue('"' + raw.toString() + '"');
         } catch (Exception ex) {
             throw new BundleException(ex);
         }
