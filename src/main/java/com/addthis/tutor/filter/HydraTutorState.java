@@ -29,16 +29,13 @@ import com.addthis.hydra.data.filter.value.ValueFilterEvalJava;
 import com.addthis.maljson.JSONObject;
 import com.addthis.tutor.bundle.JSONBundle;
 import com.addthis.tutor.bundle.JSONBundleFormat;
+import com.addthis.tutor.bundle.JSONBundles;
 
 import com.google.common.collect.BiMap;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigResolveOptions;
-
-import static com.addthis.tutor.bundle.JSONBundles.formatOutput;
-import static com.addthis.tutor.bundle.JSONBundles.parseBundle;
-import static com.addthis.tutor.bundle.JSONBundles.parseValue;
 
 public class HydraTutorState {
 
@@ -158,11 +155,11 @@ public class HydraTutorState {
                 }
 
                 for (String inputString : inputs) {
-                    ValueObject valueInput = parseValue(inputString);
+                    ValueObject valueInput = JSONBundles.parseValue(inputString);
 
                     ValueObject output = vFilter.filter(valueInput);
 
-                    String outputString = formatOutput(output);
+                    String outputString = JSONBundles.formatOutput(output);
 
                     outputBuilder.append(outputString);
 
@@ -178,7 +175,7 @@ public class HydraTutorState {
 
                 for (String inputString : inputs) {
 
-                    JSONObject jsonInput = parseBundle(inputString);
+                    JSONObject jsonInput = JSONBundles.parseBundle(inputString);
 
                     JSONBundleFormat format = new JSONBundleFormat();
 

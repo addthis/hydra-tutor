@@ -14,6 +14,8 @@
 
 package com.addthis.tutor.bundle;
 
+import java.io.IOException;
+
 import java.util.List;
 
 import com.addthis.bundle.value.ValueArray;
@@ -55,70 +57,11 @@ public final class JSONBundles {
         return jsonInput;
     }
 
-    public static ValueObject parseValue(String input) throws JSONException {
-        return parseValue(input, false);
-    }
-
-    public static ValueObject parseValue(String input, boolean unquotedStrings) throws JSONException {
+    public static ValueObject parseValue(String input) throws IOException {
         if (input == null) {
             return null;
         }
-
-        input = input.trim();
-
-        if (input.equals("")) {
-            return ValueFactory.create(input);
-        } else if (input.equals("null") || input.equals("(null)")) {
-            return null;
-        }
-        if (input.length() >= 2) {
-            if (input.startsWith("\"") && input.endsWith("\"")) {
-                return ValueFactory.create(input.substring(1, input.length() - 1));
-            } else if (input.startsWith("{") && input.endsWith("}")) {
-                JSONObject jsonInput = new JSONObject(input);
-
-                JSONBundleFormat format = new JSONBundleFormat();
-
-                JSONBundle bundle = new JSONBundle(jsonInput, format);
-
-                JSONBundleMap valueMap = new JSONBundleMap(bundle);
-
-                return valueMap;
-            } else if (input.startsWith("[") && input.endsWith("]")) {
-                String[] groups = {"{}", "[]", "\""};
-
-                LosslessTokenizer tokenizer = new LosslessTokenizer(",", groups, false);
-
-                List<String> tokens = tokenizer.tokenize(input.substring(1, input.length() - 1));
-
-                ValueArray valueArray = ValueFactory.createArray(tokens.size());
-
-                for (int i = 0; i < tokens.size(); i++) {
-                    valueArray.add(parseValue(tokens.get(i), unquotedStrings));
-                }
-
-                return valueArray;
-
-            }
-        }
-        if (unquotedStrings) {
-            return ValueFactory.create(input);
-        }
-        if (input.indexOf('.') >= 0 || input.equals("NaN")) {
-            try {
-                double dValue = Double.parseDouble(input);
-                return ValueFactory.create(dValue);
-            } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException(generateErrorMessage(input), ex);
-            }
-        } else {
-            try {
-                long lValue = Long.parseLong(input);
-                return ValueFactory.create(lValue);
-            } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException(generateErrorMessage(input), ex);
-            }
-        }
+        return ValueFactory.decodeValue(input);
     }
 
     public static String formatOutput(ValueObject output) {

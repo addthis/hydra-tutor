@@ -45,17 +45,6 @@ public class JSONBundle implements Bundle {
         return json;
     }
 
-    // TODO handle nested objects
-    private ValueMap convertJSONObject(JSONObject input) {
-        ValueMap map = ValueFactory.createMap();
-        for (String key : input.keySet()) {
-            Object raw = input.opt(key);
-            Class<?> clazz = raw.getClass();
-            map.put(key, createPrimitiveBundle(clazz, raw));
-        }
-        return map;
-    }
-
     @Override
     public ValueObject getValue(BundleField field) throws BundleException {
         try {
@@ -63,40 +52,9 @@ public class JSONBundle implements Bundle {
             if (raw == null) {
                 return null;
             }
-            Class<?> clazz = raw.getClass();
-
-                /* unwrap JSONObject to ValueMap */
-            if (clazz == JSONObject.class) {
-                return convertJSONObject((JSONObject) raw);
-            } else if (clazz == JSONArray.class) {
-                // TODO: still only one dimension supported
-                JSONArray jarr = (JSONArray) raw;
-                ValueArray arr = ValueFactory.createArray(jarr.length());
-                for (int i = 0; i < jarr.length(); i++) {
-                    arr.add(i, createPrimitiveBundle(jarr.opt(i).getClass(), jarr.opt(i)));
-                }
-                return arr;
-            } else {
-                return createPrimitiveBundle(clazz, raw);
-            }
+            return ValueFactory.decodeValue(raw.toString());
         } catch (Exception ex) {
             throw new BundleException(ex);
-        }
-    }
-
-    private ValueObject createPrimitiveBundle(Class<?> clazz, Object raw) {
-        // it would be cool to not do this twice, but I gave up fighting with generics
-        //Class<?> clazz = raw.getClass();
-        if (clazz == Integer.class) {
-            return ValueFactory.create(((Integer) raw).longValue());
-        } else if (clazz == Long.class) {
-            return ValueFactory.create(((Long) raw).longValue());
-        } else if (clazz == Float.class) {
-            return ValueFactory.create(((Float) raw).doubleValue());
-        } else if (clazz == Double.class) {
-            return ValueFactory.create(((Double) raw).doubleValue());
-        } else {
-            return ValueFactory.create(raw.toString());
         }
     }
 

@@ -86,11 +86,11 @@ public class TreeInput extends AbstractIterator<Bundle> {
                 Bundle bundle = bundleFactory.createBundle();
                 Iterator<String> values = nextRow.iterator();
                 for (BundleField field : fields) {
-                        bundle.setValue(field, JSONBundles.parseValue(values.next(), true));
+                        bundle.setValue(field, JSONBundles.parseValue(values.next()));
                 }
                 return bundle;
             }
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             throw Throwables.propagate(e);
         }
     }
