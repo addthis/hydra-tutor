@@ -32,6 +32,7 @@ import com.addthis.codec.jackson.Jackson;
 import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
+import com.addthis.hydra.data.filter.closeablebundle.CloseableBundleFilter;
 import com.addthis.hydra.data.filter.value.ValueFilter;
 import com.addthis.hydra.data.filter.value.ValueFilterEvalJava;
 import com.addthis.maljson.JSONObject;
@@ -48,19 +49,23 @@ public class HydraTutorState {
 
     ValueFilter vFilter;
     BundleFilter bFilter;
+    CloseableBundleFilter cFilter;
     FilterCache filterCache;
     volatile Future<JSONObject> future;
 
     static final BiMap<String, Class<?>> vClassMap;
     static final BiMap<String, Class<?>> bClassMap;
+    static final BiMap<String, Class<?>> cClassMap;
 
     static {
         Pluggable valueFilterPluggable = ValueFilter.class.getAnnotation(Pluggable.class);
         Pluggable bundleFilterPluggable = BundleFilter.class.getAnnotation(Pluggable.class);
+        Pluggable closeableBundleFilterPluggable = CloseableBundleFilter.class.getAnnotation(Pluggable.class);
 
         PluginRegistry pluginRegistry = PluginRegistry.defaultRegistry();
         vClassMap = pluginRegistry.asMap().get(valueFilterPluggable.value()).asBiMap();
         bClassMap = pluginRegistry.asMap().get(bundleFilterPluggable.value()).asBiMap();
+        cClassMap = pluginRegistry.asMap().get(closeableBundleFilterPluggable.value()).asBiMap();
     }
 
     public static ValueObject toValueObject(String input) throws IOException {
@@ -77,14 +82,22 @@ public class HydraTutorState {
 
     public String filter(String input, String filter, String filterType) throws Exception {
         try {
+            return doFilter(input, filter, filterType);
+        } finally {
+            cleanupCloseableFilter();
+        }
+    }
+
+    private String doFilter(String input, String filter, String filterType) throws Exception {
+        try {
             if (input == null || filter == null) {
                 return "";
             }
 
             if (filterType == null || !(filterType.equals("auto") || filterType.equals("value") ||
-                                        filterType.equals("bundle"))) {
+                                        filterType.equals("bundle") || filterType.equals("closeable bundle"))) {
                 throw new IllegalStateException("Internal error: the filter type " +
-                                                "is not one of \"auto\", \"bundle\", or \"value\".");
+                                                "is not one of \"auto\", \"bundle\", \"closeable bundle\", or \"value\".");
             }
 
             filter = filter.trim();
@@ -96,6 +109,7 @@ public class HydraTutorState {
                 filterCache = testCache;
                 vFilter = null;
                 bFilter = null;
+                cleanupCloseableFilter();
 
                 CodecJackson codec = Jackson.defaultCodec();
                 Config filterConfig, config = ConfigFactory.parseString(filterCache.filter);
@@ -126,10 +140,24 @@ public class HydraTutorState {
                                     " a bundle filter or a value filter. Please select 'bundle'" +
                                     " or 'value' and retry.");
                         }
+                        if (bClassMap.get(stype) != null && cClassMap.get(stype) != null) {
+                            throw new IllegalStateException(
+                                    "The 'op' : \"" + stype + "\" can be interpreted as either" +
+                                    " a bundle filter or a closeable bundle filter. Please select 'bundle'" +
+                                    " or 'closeable bundle' and retry.");
+                        }
+                        if (vClassMap.get(stype) != null && cClassMap.get(stype) != null) {
+                            throw new IllegalStateException(
+                                    "The 'op' : \"" + stype + "\" can be interpreted as either" +
+                                    " a value filter or a closeable bundle filter. Please select 'value'" +
+                                    " or 'closeable bundle' and retry.");
+                        }
                         if (vClassMap.get(stype) != null) {
                             vFilter = codec.decodeObject(ValueFilter.class, filterConfig);
                         } else if (bClassMap.get(stype) != null) {
                             bFilter = codec.decodeObject(BundleFilter.class, filterConfig);
+                        } else if (cClassMap.get(stype) != null) {
+                            cFilter = codec.decodeObject(CloseableBundleFilter.class, filterConfig);
                         } else {
                             throw new IllegalStateException("Cannot recognize the 'op' : \"" + stype + "\"");
                         }
@@ -142,21 +170,37 @@ public class HydraTutorState {
                             bFilter = codec.decodeObject(BundleFilter.class, filterConfig);
                         } catch (Exception ignored) {
                         }
+                        try {
+                            cFilter = codec.decodeObject(CloseableBundleFilter.class, filterConfig);
+                        } catch (Exception ignored) {
+                        }
                         if ((vFilter != null) && (bFilter != null)) {
                             throw new IllegalStateException(
                                     "The op can be interpreted as either" +
                                     " a bundle filter or a value filter. Please select 'bundle'" +
                                     " or 'value' and retry.");
-                        } else if ((vFilter == null) && (bFilter == null)) {
+                        } else if ((cFilter != null) && (bFilter != null)) {
                             throw new IllegalStateException(
-                                    "Cannot convert the filter to a bundle filter or a value filter. " +
-                                    "Specify 'bundle' or 'value' for more information");
+                                    "The op can be interpreted as either" +
+                                    " a bundle filter or a closeable bundle filter. Please select 'bundle'" +
+                                    " or 'closeable bundle' and retry.");
+                        } else if ((vFilter != null) && (cFilter != null)) {
+                            throw new IllegalStateException(
+                                    "The op can be interpreted as either" +
+                                    " a closeable bundle filter or a value filter. Please select 'closeable bundle'" +
+                                    " or 'value' and retry.");
+                        } else if ((vFilter == null) && (bFilter == null) && (cFilter == null)) {
+                            throw new IllegalStateException(
+                                    "Cannot convert the filter to a bundle filter, value filter, or closeable bundle filter. " +
+                                    "Specify 'bundle', 'value', or 'closeable bundle', for more information");
                         }
                     }
                 } else if (filterType.equals("bundle")) {
                     bFilter = codec.decodeObject(BundleFilter.class, filterConfig);
-                } else {
+                } else if (filterType.equals("value")) {
                     vFilter = codec.decodeObject(ValueFilter.class, filterConfig);
+                } else {
+                    cFilter = codec.decodeObject(CloseableBundleFilter.class, filterConfig);
                 }
             }
 
@@ -207,6 +251,23 @@ public class HydraTutorState {
 
                     outputBuilder.append("\n");
                 }
+            } else if (cFilter != null) {
+                for (String inputString : inputs) {
+
+                    Bundle bundle = Bundles.decode(inputString);
+
+                    boolean result = cFilter.filter(bundle);
+
+                    outputBuilder.append(Bundles.toJSONObject(bundle).toString(2));
+
+                    outputBuilder.append(" =========> filter result is '");
+
+                    outputBuilder.append(result);
+
+                    outputBuilder.append("'");
+
+                    outputBuilder.append("\n");
+                }
             } else {
                 throw new IllegalStateException("Illegal state reached in hydra-tutor.");
             }
@@ -215,7 +276,16 @@ public class HydraTutorState {
             filterCache = null;
             bFilter = null;
             vFilter = null;
+            cleanupCloseableFilter();
             throw ex;
+        }
+    }
+
+    private void cleanupCloseableFilter() {
+        if (cFilter != null) {
+            filterCache = null;
+            cFilter.close();
+            cFilter = null;
         }
     }
 
@@ -227,6 +297,7 @@ public class HydraTutorState {
         filterCache = null;
         vFilter = null;
         bFilter = null;
+        cleanupCloseableFilter();
         future = null;
     }
 
