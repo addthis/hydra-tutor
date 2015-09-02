@@ -13,25 +13,25 @@
  */
 package com.addthis.tutor.filter;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.util.concurrent.Future;
 
+import com.addthis.basis.util.LessFiles;
 import com.addthis.basis.util.Parameter;
 
 import com.addthis.bundle.core.Bundle;
 import com.addthis.bundle.core.Bundles;
-import com.addthis.bundle.value.ValueArray;
 import com.addthis.bundle.value.ValueFactory;
-import com.addthis.bundle.value.ValueMap;
 import com.addthis.bundle.value.ValueObject;
 import com.addthis.codec.annotations.Pluggable;
-import com.addthis.codec.config.Configs;
 import com.addthis.codec.jackson.CodecJackson;
 import com.addthis.codec.jackson.Jackson;
 import com.addthis.codec.plugins.PluginRegistry;
 import com.addthis.hydra.data.filter.bundle.BundleFilter;
 import com.addthis.hydra.data.filter.bundle.BundleFilterEvalJava;
+import com.addthis.hydra.data.filter.closeablebundle.CloseableBundleCMSLimit;
 import com.addthis.hydra.data.filter.closeablebundle.CloseableBundleFilter;
 import com.addthis.hydra.data.filter.value.ValueFilter;
 import com.addthis.hydra.data.filter.value.ValueFilterEvalJava;
@@ -52,6 +52,7 @@ public class HydraTutorState {
     CloseableBundleFilter cFilter;
     FilterCache filterCache;
     volatile Future<JSONObject> future;
+    File temporaryDir;
 
     static final BiMap<String, Class<?>> vClassMap;
     static final BiMap<String, Class<?>> bClassMap;
@@ -252,6 +253,14 @@ public class HydraTutorState {
                     outputBuilder.append("\n");
                 }
             } else if (cFilter != null) {
+                if (cFilter instanceof CloseableBundleCMSLimit) {
+                    if (temporaryDir == null) {
+                        temporaryDir = LessFiles.createTempDir(((CloseableBundleCMSLimit) cFilter).dataDir, "cms-limit");
+                        cFilter = new CloseableBundleCMSLimit
+                                .CloseableBundleCMSLimitBuilder((CloseableBundleCMSLimit) cFilter)
+                                .setDataDir(temporaryDir.getAbsolutePath()).build();
+                    }
+                }
                 for (String inputString : inputs) {
 
                     Bundle bundle = Bundles.decode(inputString);
@@ -286,6 +295,10 @@ public class HydraTutorState {
             filterCache = null;
             cFilter.close();
             cFilter = null;
+        }
+        if (temporaryDir != null) {
+            LessFiles.deleteDir(temporaryDir);
+            temporaryDir = null;
         }
     }
 
