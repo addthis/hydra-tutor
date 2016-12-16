@@ -29,6 +29,7 @@ done
 
 pushd $DIR
 mvn versions:use-latest-versions
+mvn versions:commit
 mvn clean
 mvn package -Pbdbje
 
