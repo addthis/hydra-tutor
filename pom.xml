@@ -65,6 +65,7 @@
           <allowSnapshots>true</allowSnapshots>
           <includes>
             <include>com.addthis.hydra:*</include>
+            <include>com.addthis.hydra.internal:*</include>
           </includes>
         </configuration>
       </plugin>
@@ -127,6 +128,16 @@
       <groupId>com.yammer.dropwizard</groupId>
       <artifactId>dropwizard-views</artifactId>
       <version>0.6.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.addthis.hydra.internal</groupId>
+      <artifactId>hydra-essentials-internal</artifactId>
+      <version>5.6.20-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.addthis.hydra.internal</groupId>
+      <artifactId>hydra-filters-internal</artifactId>
+      <version>5.6.20-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.addthis.hydra</groupId>

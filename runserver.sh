@@ -12,5 +12,5 @@
 # limitations under the License.
 
 # Cannot determine a way to disable admin port in dropwizard so using a randomly generated password.
-java -Ddw.http.adminUsername="admin" -Ddw.http.adminPassword="`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c40`" \
+java -Dallow.eval.java=true -Ddw.http.adminUsername="admin" -Ddw.http.adminPassword="`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c40`" \
    -Ddebug.threadGroup=1 -jar `ls -t target/hydra-tutor-*-exec.jar | head -n 1` server conf/hydratutor.yaml

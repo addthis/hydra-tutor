@@ -338,7 +338,7 @@ public class TreeTutorResource {
                     JSONObject dataJSON = data.getJSONObject(keys.next().toString());
                     String dataString = dataJSON.getString("t");
                     String dataType = pluginMap.asBiMap().get(dataString).getSimpleName();
-                    links.put(dataType, "http://oss-docs.addthiscode.net/hydra/latest/user-reference/com/addthis/hydra/data/tree/prop/" + dataType + ".Config.html");
+                    links.put(dataType, "http://app-docs.clearspring.local/docs/hydra-user-reference/latest/com/addthis/hydra/data/tree/prop/" + dataType + ".Config.html");
                 }
 
                 attachments.put("data", "[" + data.toString() + "]");

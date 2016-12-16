@@ -153,6 +153,7 @@ $(document).ready( function() {
 		stash_state("\"harry potter\"\n\"harry\"\n\"potter\"" , "{op : \"require\", value : [\"gandalf\", \"merlin\", \"harry potter\"]}")
 		stash_state("\"harry potter\"\n\"merlin\"\n\"gandalf\"" , "{op : \"case\", upper : true}")
 		stash_state("\"foo\"" , "{op : \"count\", format : \"0000000\"}")
+		stash_state("{\"USER_AGENT_STRING\" : \"Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16\"}\n{\"USER_AGENT_STRING\" : \"Mozilla/5.0 (Linux; U; Android 4.0.4; en-gb; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30\"}" , "{op : \"user-agent-wt\", from : \"USER_AGENT_STRING\", uaName : \"UA_NAME\", osFamily : \"OS_FAMILY\", deviceBrand: \"DEVICE_BRAND\", deviceSeries: \"DEVICE_SERIES\", deviceModel: \"DEVICE_MODEL\", deviceDescription : \"DEVICE_DESCRIPTION\", category: \"CATEGORY\" }")
 		stash_state("{hello:\"foo\", world:\"bar\"}" , "{op : \"debug\"}")
 		htapp.library_rerender();
 		htapp.current=temp_query_obj.id;
