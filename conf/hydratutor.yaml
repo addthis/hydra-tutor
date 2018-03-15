@@ -12,22 +12,43 @@
 
 webDirectory: web
 
-# HTTP-specific options.
-http:
+server:
 
-  # The port on which the HTTP server listens for service requests.
-  port: 8100
+  applicationConnectors:
+  - type: http
+    port: 8100
 
-  # The port on which the HTTP server listens for administrative requests.
-  adminPort: 8101
+  adminConnectors:
+  - type: http
+    port: 8101
 
+# Logging settings.
 logging:
 
-  # Settings for logging to stdout.
-  console:
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
 
-    # If true, write log statements to stdout.
-    enabled: true
+  # Logger-specific levels.
+  loggers:
 
-    # Do not display log statements below this threshold to stdout.
-    threshold: ALL
+    com.addthis.tutor: DEBUG
+
+    # Redirects SQL logs to a separate file
+    org.hibernate.SQL:
+      level: DEBUG
+
+# Logback's Time Based Rolling Policy - archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}.log.gz
+# Logback's Size and Time Based Rolling Policy -  archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}-%i.log.gz
+# Logback's Fixed Window Rolling Policy -  archivedLogFilenamePattern: /tmp/application-%i.log.gz
+
+  appenders:
+    - type: console
+    - type: file
+      threshold: INFO
+      logFormat: "%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg %n"
+      currentLogFilename: /tmp/application.log
+      archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}-%i.log.gz
+      archivedFileCount: 7
+      timeZone: UTC
+      maxFileSize: 10MB
+

@@ -13,38 +13,27 @@
  */
 package com.addthis.tutor.dropwizard;
 
-import com.yammer.dropwizard.config.Configuration;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import io.dropwizard.Configuration;
 
 /**
- * Dropwizard configuration class for TreeTutor.
+ * Dropwizard configuration class for HydraTutor.
  */
 public class HydraTutorConfiguration extends Configuration {
 
-    //@NotEmpty
-    @JsonProperty
-    private String dbName;
-
-    @JsonProperty
     private String webDirectory = "web";
 
     public HydraTutorConfiguration() {
 
     }
 
-    public String getDbName() {
-        return dbName;
-    }
-
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
-    }
-
+    @JsonProperty
     public String getWebDirectory() {
         return webDirectory;
     }
 
+    @JsonProperty
     public void setWebDirectory(String webDirectory) {
         this.webDirectory = webDirectory;
     }

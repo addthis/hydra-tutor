@@ -13,28 +13,32 @@
  */
 package com.addthis.tutor.dropwizard;
 
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
 
-public class HydraTutorService extends Service<HydraTutorConfiguration> {
+import io.dropwizard.Application;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+
+public class HydraTutorApplication extends Application<HydraTutorConfiguration> {
 
     public static void main(String[] args) throws Exception {
-        new HydraTutorService().run(args);
+        new HydraTutorApplication().run(args);
+    }
+
+    @Override
+    public String getName() {
+        return "hydra-tutor";
     }
 
     @Override
     public void initialize(Bootstrap<HydraTutorConfiguration> bootstrap) {
-        bootstrap.setName("hydra-tutor");
         bootstrap.addBundle(new LogbackConfigurer());
     }
 
     @Override
     public void run(HydraTutorConfiguration configuration,
             Environment environment) {
-        environment.addResource(new FilterTutorResource(configuration));
-        environment.addResource(new TreeTutorResource(configuration));
-        environment.addResource(new AssetsResource(configuration));
+        environment.jersey().register(new FilterTutorResource(configuration));
+        environment.jersey().register(new AssetsResource(configuration));
     }
 
 }

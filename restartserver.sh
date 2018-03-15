@@ -15,7 +15,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export MAVEN_OPTS="-Xmx750m"
 
-PID=`jps -m 2> /dev/null | grep hydra-tutor | cut -f 1 -d ' '`
+PID=`jcmd | grep HydraTutorApplication | cut -f 1 -d ' '`
 iter=0
 
 while [[ $PID && $iter != 5 ]]
@@ -23,15 +23,14 @@ do
     echo "Killing existing hydra tutor"
     kill $PID
     sleep 10
-    PID=`jps -m 2> /dev/null | grep hydra-tutor | cut -f 1 -d ' '`
+    PID=`jcmd | grep HydraTutorApplication | cut -f 1 -d ' '`
     iter=$(( $iter + 1))
 done
 
 pushd $DIR
 mvn versions:use-latest-versions
 mvn versions:commit
-mvn clean
-mvn package -Pbdbje
+mvn clean package
 
 nohup ./runserver.sh &
 popd

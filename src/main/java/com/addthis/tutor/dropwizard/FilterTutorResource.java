@@ -18,7 +18,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -39,8 +38,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import com.sun.jersey.api.core.HttpContext;
-
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
@@ -53,9 +50,6 @@ public class FilterTutorResource {
 
     private static final int TIMEOUT = 2;
     private static final TimeUnit TIMEOUT_UNITS = TimeUnit.MINUTES;
-
-    @Context
-    private HttpContext context;
 
     private final Cache<String, HydraTutorState> userState;
 
