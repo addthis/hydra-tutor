@@ -1,0 +1,22 @@
+LICENSES FOR THIRD-PARTY COMPONENTS 
+
+===============================================================================
+   
+The following sections list licensing information for
+libraries included with the hydra-tutor source and components
+used to test hydra-tutor. 
+
+The following software may be included in this product:
+
+===============================================================================
+
+        Dropwizard » 1.1.0
+
+Copyright 2010-2013 Coda Hale and Yammer, Inc., 2014-2016 Dropwizard Team
+
+This product includes software developed by Coda Hale and Yammer, Inc.
+
+Apache 2.0 license, shown below. See the License for details about distribution rights, and the specific rights regarding derivate works. 
+
+
+https://github.com/dropwizard/dropwizard/blob/release/1.1.x/LICENSE
